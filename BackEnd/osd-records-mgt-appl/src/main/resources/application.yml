@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: osd-records-mgt-appl
+  datasource:
+    url: jdbc:oracle:thin:@localhost:1521:rogate
+    username: system
+    password: Changeme0
+
+# Instruction: uncomment line 11 to 14 during development
+# && comment it out again during submission of the project to the gitHub.
+#
+#  jpa:
+#    show-sql: true
+#    hibernate:
+#      ddl-auto: update
+
+server:
+  port: 8080
+logging:
+  level:
+    org.springframework.security.web: info
+    root: info
+  file:
+    name: build/log/${spring.application.name}.log
+jwt:
+  secret: 'thebigbrownfoxjumpsoverthelazydog'

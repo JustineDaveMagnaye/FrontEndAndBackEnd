@@ -1,0 +1,118 @@
+.wrappers {
+    position: relative;
+    width: 500px;
+    height: 650px;
+    background: #fff;
+    border-radius: 10px;
+    color: black;
+}
+
+.wrappers .form-box-login {
+    margin-top: 3vw;
+    width: 100%;
+    padding: 40px;
+}
+
+.header {
+    font-size: 30px;
+    text-align: center;
+}
+
+form .input-box {
+    position: relative;
+    width: 100%;
+    height: 25px;
+    margin: 20px 0 65px 0;
+    justify-content: space-between;
+}
+
+.input-box input {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border-radius: 5px;
+    font-size: 16px;
+    padding: 20px 45px 20px 20px;
+    border: 1px solid gray;
+}
+
+.input-box .icon {
+    position: absolute;
+    right: 20px;
+    top: 105%;
+    transform: translateY(-0%);
+    font-size: 20px;
+}
+
+form .forgot-password {
+    display: flex;
+    justify-content: flex-end;
+    font-size: 14.5px;
+    margin-top: -15px;
+    margin-bottom: 10px;
+}
+
+.forgot-password a {
+    text-decoration: none;
+    color: black;
+}
+
+form button {
+    display: flex;
+    margin: 40px auto 0 auto;
+    justify-content: center;
+    align-items: center;
+    width: 65%;
+    height: 40px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    background: #2a9df4;
+    color: #fff;
+    border: none;
+    outline: none;
+}
+
+form .register-link {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 15px;
+}
+
+.register-link p {
+    margin-top: 5px;
+    color: #03254c;
+}
+
+.register-link a {
+    text-decoration: none;
+    color: #03254c;
+}
+.select-style {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    background-color: #fff;
+    color: #000;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="6"><path d="M0 0l6 6 6-6H0z" fill="%23444444"/></svg>');
+    background-repeat: no-repeat;
+    background-position-x: calc(100% - 10px);
+    background-position-y: center;
+    cursor: pointer;
+}
+.button-disabled {
+    background-color: #d3d3d3; 
+    cursor: not-allowed; 
+}
+
+.button-enabled {
+    background-color: #007bff; 
+    cursor: pointer; 
+    color: white; 
+}
