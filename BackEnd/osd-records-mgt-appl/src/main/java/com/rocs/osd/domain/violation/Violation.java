@@ -20,7 +20,6 @@ public class Violation implements Serializable {
     private Date dateOfNotice;
 
     @ManyToOne
-    @JoinColumn(name = "student_number", referencedColumnName = "studentNumber")
     private Student student;
 
 
