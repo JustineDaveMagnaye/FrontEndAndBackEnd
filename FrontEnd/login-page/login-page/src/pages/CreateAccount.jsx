@@ -102,14 +102,14 @@ const RegisterForm = () => {
                     </div>
                     <div className="input-box">
                         <label>Username:</label>
-                        <div className="input-container">
+                        <div className="insert">
                             <input type="text" name="username" value={formData.username} onChange={handleChange} />
                             <FaUser className="icon" />
                         </div>
                     </div>
                     <div className="input-box">
                         <label>Password</label>
-                        <div className="input-container">
+                        <div className="insert">
                             <input type={showPassword ? "text" : "password"} required onChange={(e) => setFormData({ ...formData, password: e.target.value })} />
                             {showPassword ? (
                                 <TbEyeUp className="icon" onClick={togglePasswordVisibility} />

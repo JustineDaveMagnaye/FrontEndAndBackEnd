@@ -12,7 +12,7 @@
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
-div .add-form-container {
+.offense-form-container {
     display: grid;
     justify-items: center;
     align-content: center;
@@ -36,8 +36,7 @@ div .add-form-container {
     font-weight: bold;
 }
 
-.form-group input,
-.form-group textarea {
+.form-group input {
     width: 300px;
     padding: 3px 10px;
     font-size: 14px;
@@ -47,13 +46,27 @@ div .add-form-container {
     height: 35px;
 }
 
-.form-group textarea {
-    resize: vertical;
-    height: 80px;
+.selectOffense {
+    width: 300px;
+    padding: 3px 10px;
+    font-size: 14px;
+    border-radius: 5px;
+    background-color: white;
+    border: 1px solid #757575;
+    height: 35px;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="6"><path d="M0 0l6 6 6-6H0z" fill="%23444444"/></svg>');
+    background-repeat: no-repeat;
+    background-position-x: calc(100% - 20px);
+    background-position-y: center;
+    transition: background-color 0.3s;
 }
 
-.submit-btn,
-.close-btn {
+
+.submit-btn {
     margin: 15px 0;
     justify-content: center;
     align-items: center;
@@ -67,7 +80,7 @@ div .add-form-container {
     transition: background-color 0.3s;
 }
 
-.close-btn {
+.modal .close-btn {
     background-color: transparent;
     color: #333;
     font-size: 24px;

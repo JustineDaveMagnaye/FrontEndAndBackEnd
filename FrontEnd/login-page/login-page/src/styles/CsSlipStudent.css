@@ -1,4 +1,3 @@
-
 * {
     font-family: sans-serif;
     margin: 0;
@@ -11,20 +10,22 @@
 }
 
 .csreport-student {
-    position: absolute;
+    position: fixed; 
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
     background-color: #D9D9D9;
+    overflow: auto; 
     display: grid;
     justify-items: center;
     align-content: start;
 }
 
 .container {
-    margin-top: 5vw;
-    width: 95vw;
+    margin-top: 75px;
+    margin-bottom: 80px;
+    width: 95%;
     background-color: #fff;
     display: grid;
     justify-items: center;
@@ -36,14 +37,15 @@ h1 {
     padding: .5vw 3vw;
     width: 100%;
     text-align: left;
-    font-size: 1.5vw;
+    font-size: 28px;
 }
+
 h2{
-    font-weight: 500;
-    padding: .5vw 0;
+    font-weight: 100;
+    font-style: italic;
     width: 100%;
     text-align: left;
-    font-size: 1.4vw;
+    font-size: 24px;
 }
 
 .nav-bar {
@@ -62,8 +64,8 @@ h2{
 }
 
 .nav-links {
-    padding: 1vw 0;
     display: flex;
+    align-items: center;
     gap: 1.5vw;
 }
 
@@ -84,12 +86,16 @@ h2{
     border-bottom: 1.5px solid white;
 }
 
+.profile {
+    max-width: 24px;
+}
+
 .content-container { 
     border-top: .1vw solid black;
     display: grid;
     justify-items: center;
     align-content: start;
-    padding: 1.5vw 3vw;
+    padding: 20px 3vw;
     width: 100%;
 }
 
@@ -98,11 +104,9 @@ h2{
     display: grid;
     justify-items: center;
     align-content: start;
+    padding: 20px 3vw;
     width: 100%;
-    padding: 1.5vw 3vw;
-
 }
-
 
 select:focus{
     outline: none;
@@ -113,50 +117,80 @@ h2{
     font-style: italic;
     width: 100%;
     text-align: left;
-    font-size: 1.7vw;
+    font-size: 24px;
 }
 
-.my-violation-table {
+.date-input {
+    width: 160px;
+    padding: 3px 10px;
+    font-size: 14px;
+    border-radius: 5px;
+    background-color: #D9D9D9;
+    height: 35px;
+}
+
+#to {
+    font-size: 14px;
+}
+
+.my-cslip-table {
     width: 100%;
-    max-width: 100%;
-    margin: 1.5vw 0;
+    margin: 25px 0;
     overflow-x: auto;
-    border-collapse: collapse; 
+    border-collapse: collapse;
 }
 
-.my-violation-table th,
-.my-violation-table td {
-    border: 1px solid #5B5B5B;
-    padding: .5vw;
-    font-size: 1vw;
-    background-color: #fff;
+.my-cslip-table table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+.my-cslip-table th,
+.my-cslip-table td {
+    border: 1px solid #e1e1e1;
+    padding: 5px 10px;
+    font-size: 16px;
     text-align: left;
 }
 
-.my-violation-table th {
+.my-cslip-table tr:hover {
+    background-color: #f0f0f0;
+}
+
+.my-cslip-table th {
     background-color: #D9D9D9;
 }
 
-.my-violation-table tr:nth-child(even) {
-    background-color: #f9f9f9;
+.my-cslip-table tr:nth-child(even) {
+    background-color: none;
 }
+
 
 /* table2 */
 .student-cs-report-table {
     width: 100%;
-    max-width: 100%;
-    margin: 1.5vw 0;
+    margin: 25px 0;
     overflow-x: auto;
-    border-collapse: collapse; 
+    border-collapse: collapse;
+}
+
+.student-cs-report-table table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
 }
 
 .student-cs-report-table th,
 .student-cs-report-table td {
-    border: 1px solid #5B5B5B;
-    padding: .5vw;
-    font-size: 1vw;
-    background-color: #fff;
+    border: 1px solid #e1e1e1;
+    padding: 5px 10px;
+    font-size: 16px;
     text-align: left;
+}
+
+.student-cs-report-table tr:hover {
+    background-color: #f0f0f0;
 }
 
 .student-cs-report-table th {
@@ -164,49 +198,21 @@ h2{
 }
 
 .student-cs-report-table tr:nth-child(even) {
-    background-color: #f9f9f9;
+    background-color: none;
 }
 
-.action-button {
-    padding: 10px 20px; 
-    font-size: 16px; 
-    background-color: #C6C6C6;
+
+.eye-button {
+    height: 42px;
+    width: 42px;
+    background-color: #CCC;
     color: #fff;
     border: none;
     cursor: pointer;
-    border-radius: 4px;
+    border-radius: 5px;
     transition: background-color 0.3s;
 }
 
-.action-button:hover {
-    background-color: #0056b3;
-}
 
 
-@media (max-width: 768px) {
-    .nav-links a {
-        margin-right: 20px;
-        font-size: 14px;
-    }
 
-    .content-container {
-        padding: 15px;
-    }
-
-    .search-input {
-        font-size: 14px;
-        padding: 6px;
-    }
-
-    .action-button,
-    .add-offense-button {
-        padding: 8px 10px;
-        font-size: 14px;
-    }
-
-    .offense-table th,
-    .offense-table td {
-        padding: 10px;
-        font-size: 16px;
-    }
-}

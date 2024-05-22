@@ -2,6 +2,8 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useLocation } from "react-router-dom";
 import '../styles/EmployeeCsSlip.css';
 import logo from '../assets/logo_new.png';
+import user from '../assets/user.png';
+
 import axios from "axios"; 
 import AddCsReportModal from './AddCsReportModal';
 import { useNavigate } from "react-router-dom";
@@ -56,48 +58,36 @@ const EmployeeCsSlip = ({data}) => {
             setMessage("CS Report cannot be added");
         }
     };
-    const handleLogout = () => {
-        localStorage.setItem('token', '');
-        localStorage.setItem('role', '');
-        localStorage.setItem('exp', '');
-        navigate('/login')
-    };
+
     return data && (
-        <div className="cs-slip-page-admin">
-                <nav className="nav-bar">
-                    <img src={logo} alt="Logo" className="rc-logo"/>
-                    <div className="nav-links">
-                        <a href="/student/violation">REPORTS</a>
-                        <a href="#" onMouseDown={handleLogout}>Logout</a>
-                    </div>
-                </nav>
+        <div className="cs-slip-page-employee">
                 <div className="csSlipcontainer">
                     <h1>COMMUNITY SERVICE SLIP</h1>
                     <div className="cs-slip-content-container">
                         <div className="input-container">
                             <div className="field-container">
                                 <label>Student ID:</label>
-                                <input type="text" className="input-field" name="student-id" value={data.studentNumber} disabled/>
+                                <input type="text" className="input-fields" name="student-id" value={data.studentNumber} disabled/>
                             </div>
                             <div className="field-container">
                                 <label>Full Name:</label>
-                                <input type="text" className="input-field" name="name" value={data.name} disabled/>
+                                <input type="text" className="input-fields" name="name" value={data.name} disabled/>
                             </div>
                             <div className="field-container">
                                 <label>Section:</label>
-                                <input type="text" className="input-field" name="section" value={data.section} disabled/>
+                                <input type="text" className="input-fields" name="section" value={data.section} disabled/>
                             </div>
                             <div className="field-container">
                                 <label>Cluster Head:</label>
-                                <input type="text" className="input-field" name="head" value={data.head} disabled/>
+                                <input type="text" className="input-fields" name="head" value={data.head} disabled/>
                             </div>
                             <div className="field-container">
                                 <label>Hours to deduct:</label>
-                                <input type="text" className="input-field" name="deduction" value={data.deduction} disabled/>
+                                <input type="text" className="input-fields" name="deduction" value={data.deduction} disabled/>
                             </div>
                             <div className="field-container">
                                 <label>Area of Community Service:</label>
-                                <input type="text" className="input-field" name="area" value={data.area} disabled/>
+                                <input type="text" className="input-fields" name="area" value={data.area} disabled/>
                             </div>
                         </div>
                         <table className="cs-slip-table">

@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from "axios";
+import '../styles/CsSlipGuest.css';
 import logo from '../assets/logo_new.png';
+import view from '../assets/eye.png';
+import user from '../assets/user.png';
+
 import { useNavigate } from "react-router-dom";
 const CsSlipGuest = () => {
     const [csSlips, setCsSlips] = useState([]);
@@ -74,13 +78,14 @@ const CsSlipGuest = () => {
             <nav className="nav-bar">
                 <img src={logo} alt="Logo" className="rc-logo"/>
                 <div className="nav-links">
-                    <a href="/guest/violation">BENEFACTORS VIOLATION</a>
-                    <a href="/guest/cs-slip">BENEFACTORS CS SLIP</a>
-                    <a href="#" onMouseDown={handleLogout}>LOGOUT</a>
+                    <a href="/guest/violation">Violation</a>
+                    <a href="/guest/cs-slip">CS Slips</a>
+                    <a href="#" onMouseDown={handleLogout}>Logout</a>
+                    <img src={user} alt="profile" className="profile"/>
                 </div>
             </nav>
 
-            <div className="container">
+            <div className="list-container">
                 <h1>MY LIST OF COMMUNITY SERVICE SLIP</h1>
                 <div className="content-container">
                     <div className="date-filter">
@@ -100,7 +105,7 @@ const CsSlipGuest = () => {
                         </select>
                     </div>
 
-                    <table className="my-violation-table">
+                    <table className="list-table">
                         <thead>
                             <tr>
                                 <th>STUDENT NAME</th>
@@ -115,10 +120,10 @@ const CsSlipGuest = () => {
                                     <td>{csSlip.areaOfCommServId}</td>
                                     <td>
                                         <button
-                                            className="action-button"
+                                            className="view-button"
                                             onClick={() => handleViewClick(csSlip)}
                                         >
-                                            View
+                                            <img src={view} alt="view" className="view-icon"/>
                                         </button>
                                     </td>
                                 </tr>
@@ -130,7 +135,7 @@ const CsSlipGuest = () => {
                 {selectedSlip && (
                     <div className="table2-container">
                         <h2>COMMUNITY SERVICE REPORT</h2>
-                        <table className="student-cs-report-table">
+                        <table className="guest-cs-report-table">
                             <thead>
                                 <tr>
                                     <th>DATE</th>

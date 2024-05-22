@@ -84,7 +84,7 @@ const Login = () => {
 
                     <div className="field-box">
                         <label>Username</label>
-                        <div className="input-container">
+                        <div className="insert">
                             <input type="text" required onChange={(e) => setUsername(e.target.value)} />
                             <FaUser className="icon" />
                         </div>
@@ -92,7 +92,7 @@ const Login = () => {
 
                     <div className="field-box field-box-password">
                         <label>Password</label>
-                        <div className="input-container">
+                        <div className="insert">
                             <input type={showPassword ? "text" : "password"} required onChange={(e) => setPassword(e.target.value)} />
                             {showPassword ? (
                                 <TbEyeUp className="icon" onClick={togglePasswordVisibility} />

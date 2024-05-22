@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import '../styles/CommunityServiceReport.css';
 import logo from '../assets/logo_new.png';
+import user from '../assets/user.png';
+
 import { useNavigate } from "react-router-dom";
 
 const CsReportPageAdmin = () => {
@@ -92,17 +94,18 @@ const CsReportPageAdmin = () => {
     };
     return (
         <div className="cs-report-page-admin">
-            <nav className="nav-bar">
+            {/* <nav className="nav-bar">
                 <img src={logo} alt="Logo" className="rc-logo"/>
                 <div className="nav-links">
                     <a className="nav-link" href="/admin/offense">Offense</a>
                     <a className="nav-link" href="/admin/violation">Violation</a>
                     <a className="nav-link" href="/admin/cs-list">CS Slips</a>
                     <a className="nav-link" href="#" onMouseDown={handleLogout}>Logout</a>
+                    <img src={user} alt="profile" className="profile"/>
                 </div>
-            </nav>
+            </nav> */}
 
-            <div className="container">
+            <div className="report-container">
                 <h1>COMMUNITY SERVICE REPORT</h1>
                 <div className="content-container">
                     <div className="inputs-container">
@@ -132,7 +135,7 @@ const CsReportPageAdmin = () => {
                         </div>
                     )}
 
-                    <table className="offense-table">
+                    <table className="cs-report-table">
                         <thead>
                             <tr>
                                 <th>DATE</th>
@@ -143,7 +146,6 @@ const CsReportPageAdmin = () => {
                                 <th>OFFICE</th>
                                 <th>STATUS</th>
                                 <th>SUPERVISING PERSONNEL</th>
-                                <th>ACTION</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -157,7 +159,6 @@ const CsReportPageAdmin = () => {
                                     <td>{report.office}</td>
                                     <td>{report.status}</td>
                                     <td>{report.supervisingPersonnel}</td>
-                                    <td><button className="action-button">Action</button></td>
                                 </tr>
                             ))}
                             {filteredReports.length === 0 && (

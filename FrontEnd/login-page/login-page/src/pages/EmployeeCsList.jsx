@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import '../styles/EmployeeCsList.css';
 import logo from '../assets/logo_new.png';
+import user from '../assets/user.png';
+
 import axios from "axios"; 
 import { useNavigate } from "react-router-dom";
 import '../styles/EmployeeCsSlip.css';
@@ -98,10 +100,25 @@ const EmployeeCsList = () => {
         });
     };
 
+    const handleLogout = () => {
+        localStorage.setItem('token', '');
+        localStorage.setItem('role', '');
+        localStorage.setItem('exp', '');
+        navigate('/login')
+    };
 
     return (
-            <div className="list-cs-page-admin">
-            <div className="container">
+        <div className="list-cs-page-admin">
+                <nav className="nav-bar">
+                    <img src={logo} alt="Logo" className="rc-logo"/>
+                    <div className="nav-links">
+                        <a href="/student/violation">Reports</a>
+                        <a href="#" onMouseDown={handleLogout}>Logout</a>
+                        <img src={user} alt="profile" className="profile"/>
+
+                    </div>
+                </nav>
+            <div className="employee-container">
                 <h1>Community Service Reports</h1>
                 <div className="content-container">
                     <table className="csList-table">

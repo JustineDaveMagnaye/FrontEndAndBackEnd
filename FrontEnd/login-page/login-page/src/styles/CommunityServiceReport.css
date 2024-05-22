@@ -10,21 +10,18 @@
 }
 
 .cs-report-page-admin {
-    position: fixed; 
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
     background-color: #D9D9D9;
     overflow: auto; 
+    width: 100vw;
     display: grid;
     justify-items: center;
     align-content: start;
 }
 
-.container {
-    margin-top: 5vw;
-    width: 95vw;
+.report-container {
+    margin-top: 15px;
+    margin-bottom: 80px;
+    width: 95%;
     background-color: #fff;
     display: grid;
     justify-items: center;
@@ -36,7 +33,7 @@ h1 {
     padding: .5vw 3vw;
     width: 100%;
     text-align: left;
-    font-size: 1.5vw;
+    font-size: 20px;
 }
 
 .nav-bar {
@@ -55,8 +52,8 @@ h1 {
 }
 
 .nav-links {
-    padding: 1vw 0;
     display: flex;
+    align-items: center;
     gap: 1.5vw;
 }
 
@@ -77,141 +74,72 @@ h1 {
     border-bottom: 1.5px solid white;
 }
 
+.profile {
+    max-width: 24px;
+}
+
 .content-container { 
     border-top: .1vw solid black;
     display: grid;
     justify-items: center;
     align-content: start;
-    padding: 1.5vw 3vw;
+    padding: 20px 3vw;
     width: 100%;
-}
-
-select:focus{
-    outline: none;
 }
 
 .inputs-container {
     display: flex;
-    justify-content: flex-start;
+    justify-content: start;
     align-items: center;
-    margin-bottom: 1vw;
+    margin-bottom: 10px;
     width: 100%;
-    gap: 2.5vw;
+    gap: 20px;
 }
 
 .input-field {
-    width: 28vw;
-    padding: .5vw;
-    font-size: 1vw;
-    border: .1vw solid #757575;
-    border-radius: .5vw;
-    background-color: #fff;
-    height: 2.5vw;
+    width: 300px;
+    padding: 3px 10px;
+    font-size: 14px;
+    border-radius: 5px;
+    background-color: white;
+    border: 1px solid #757575;
+    height: 35px;
 }
 
 input:focus{
     outline: none;
 }
 
-h2{
-    font-weight: 100;
-    font-style: italic;
+.cs-report-table {
     width: 100%;
-    text-align: left;
-    font-size: 1.7vw;
-}
-
-.offense-table {
-    width: 100%;
-    max-width: 100%;
-    margin: 1.5vw 0;
+    margin: 25px 0;
     overflow-x: auto;
-    border-collapse: collapse; 
+    border-collapse: collapse;
 }
 
-.offense-table th,
-.offense-table td {
-    border: 1px solid #5B5B5B;
-    padding: .5vw;
-    font-size: 1vw;
-    background-color: #fff;
+.cs-report-table table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+.cs-report-table th,
+.cs-report-table td {
+    border: 1px solid #e1e1e1;
+    padding: 5px 10px;
+    font-size: 16px;
     text-align: left;
 }
 
-.offense-table th {
+.cs-report-table tr:hover {
+    background-color: #f0f0f0;
+}
+
+.cs-report-table th {
     background-color: #D9D9D9;
 }
 
-.offense-table tr:nth-child(even) {
-    background-color: #f9f9f9;
+.cs-report-table tr:nth-child(even) {
+    background-color: none;
 }
 
-.action-button {
-    padding: 10px 20px; 
-    font-size: 16px; 
-    background-color: #C6C6C6;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: background-color 0.3s;
-}
-
-.action-button:hover {
-    background-color: #0056b3;
-}
-
-.btns{
-    display: flex;
-    justify-content: end;
-    align-items: end;
-    margin: .5vw 3vw;
-    width: 100%;
-
-}
-
-.add-violation-button {
-    padding: 1vw 2vw; 
-    width: 12vw;
-    font-size: 1vw;
-    background-color: #6BCB77;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-    border-radius: .5vw;
-    transition: background-color 0.3s;
-}
-
-.add-violation-button:hover {
-    background-color: #009713;
-}
-
-
-
-@media (max-width: 768px) {
-    .nav-links a {
-        margin-right: 20px;
-        font-size: 14px;
-    }
-
-    .content-container {
-        padding: 15px;
-    }
-
-    .search-input {
-        font-size: 14px;
-        padding: 6px;
-    }
-
-    .action-button,
-    .add-offense-button {
-        padding: 8px 10px;
-        font-size: 14px;
-    }
-
-    .offense-table th,
-    .offense-table td {
-        padding: 10px;
-        font-size: 16px;
-    }
-}

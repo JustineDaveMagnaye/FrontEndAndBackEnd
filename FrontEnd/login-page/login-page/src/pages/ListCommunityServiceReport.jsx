@@ -4,6 +4,7 @@ import '../styles/ListCommunityServiceReport.css';
 import { useNavigate } from "react-router-dom";
 import logo from '../assets/logo_new.png';
 import user from '../assets/user.png';
+import CommunityServiceReport from "./CommunityServiceReport";
 
 const CsListPageAdmin = () => {
     const [csSlips, setCsSlips] = useState([]); // hook pang store lahat ng data sa community service slips
@@ -118,6 +119,10 @@ const CsListPageAdmin = () => {
                         </tbody>
                     </table>
                 </div>
+            </div>
+
+            <div>
+                <CommunityServiceReport/>
             </div>
         </div>
     );
