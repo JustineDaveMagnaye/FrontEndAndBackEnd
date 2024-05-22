@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
+import '../styles/ViolationStudent.css';
 import logo from '../assets/logo_new.png';
+import user from '../assets/user.png';
+
 const ViolationStudent = () => {
     const [violations, setViolations] = useState([]);
     const navigate = useNavigate();
@@ -51,13 +54,14 @@ const ViolationStudent = () => {
     };
 
     return (
-        <div className="csreport-student">
+        <div className="violation-student">
            <nav className="nav-bar">
-                    <img src={logo} alt="Logo" className="rc-logo"/>
+                <img src={logo} alt="Logo" className="rc-logo"/>
                 <div className="nav-links">
-                    <a href="/student/violation">MY VIOLATION</a>
-                    <a href="/student/cs-slip">MY CS SLIPS</a>
+                    <a href="/student/violation">Violation</a>
+                    <a href="/student/cs-slip">Cs Slips</a>
                     <a href="#" onMouseDown={handleLogout}>Logout</a>
+                    <img src={user} alt="profile" className="profile"/>
                 </div>
             </nav>
             <div className="container">

@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import '../styles/ViolationGuest.css';
 import logo from '../assets/logo_new.png';
+import user from '../assets/user.png';
+
 import { useNavigate } from "react-router-dom";
 const ViolationGuest = () => {
     const [violations, setViolations] = useState([]);
@@ -61,18 +64,20 @@ const ViolationGuest = () => {
             localStorage.setItem('exp', '');
             navigate('/login')
         };
+
+
     return (
-        <div className="violation-student">
-            <div className="offense-page-admin">
+        <div className="violation-guest">
             <nav className="nav-bar">
                 <img src={logo} alt="Logo" className="rc-logo"/>
                 <div className="nav-links">
-                    <a href="/guest/violation">BENEFACTORS VIOLATION</a>
-                    <a href="/guest/cs-slip">BENEFACTORS CS SLIP</a>
-                    <a href="#" onMouseDown={handleLogout}>LOGOUT</a>
+                    <a href="/guest/violation">Violation</a>
+                    <a href="/guest/cs-slip">CS Slips</a>
+                    <a href="#" onMouseDown={handleLogout}>Logout</a>
+                    <img src={user} alt="profile" className="profile"/>
                 </div>
             </nav>
-            </div>
+
             <div className="container">
                 <h1>VIOLATIONS</h1>
                 <div className="content-container">
@@ -114,7 +119,7 @@ const ViolationGuest = () => {
                         </tbody>
                     </table>
                 </div>
-            </div>
+            </div>    
         </div>
     );
 };

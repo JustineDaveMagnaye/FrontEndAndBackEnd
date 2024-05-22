@@ -30,7 +30,7 @@ const AddCsReportModal = ({ isOpen, onClose, onSubmit }) => {
         <Modal isOpen={isOpen} onRequestClose={onClose} className="modal">
             <button onClick={onClose} className="close-btn">&times;</button>
             <h2>Add CS Report</h2>
-            <form onSubmit={handleSubmit} className='form-container'>
+            <form onSubmit={handleSubmit} className='add-form-container'>
                 <div className="form-group">
                     <label>Date of CS:</label>
                     <input type="date" name="dateOfCs" value={newCsReport.dateOfCs} onChange={handleInputChange} required />

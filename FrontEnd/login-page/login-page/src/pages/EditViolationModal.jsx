@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
-import '../styles/AddEditModal.css';
+import '../styles/AddEditViolationModal.css';
 
 const EditViolationModal = ({ isOpen, onClose, onSubmit, violationToEdit }) => {
     const [violation, setViolation] = useState({
@@ -35,7 +35,7 @@ const EditViolationModal = ({ isOpen, onClose, onSubmit, violationToEdit }) => {
         <Modal isOpen={isOpen} onRequestClose={onClose} className="modal">
             <button onClick={onClose} className="close-btn">&times;</button>
             <h2>Edit Violation</h2>
-            <form onSubmit={handleSubmit} className='form-container'>
+            <form onSubmit={handleSubmit} className='violation-form-container'>
                 <div className="form-group">
                     <label>Student ID</label>
                     <input type="text" name="studentId" value={violation.studentId} onChange={handleInputChange} required />

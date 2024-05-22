@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/CsSlipStudent.css';
 import axios from "axios";
+import '../styles/CsSlipStudent.css';
 import logo from '../assets/logo_new.png';
+import view from '../assets/eye.png';
+import user from '../assets/user.png';
+
 import { useNavigate } from "react-router-dom";
 
 const CsSlipStudent = () => {
@@ -63,16 +67,17 @@ const CsSlipStudent = () => {
            <nav className="nav-bar">
                     <img src={logo} alt="Logo" className="rc-logo"/>
                 <div className="nav-links">
-                    <a href="/student/violation">MY VIOLATION</a>
-                    <a href="/student/cs-slip">MY CS SLIP</a>
+                    <a href="/student/violation">Violation</a>
+                    <a href="/student/cs-slip">Cs Slips</a>
                     <a href="#" onMouseDown={handleLogout}>Logout</a>
+                    <img src={user} alt="profile" className="profile"/>
                 </div>
             </nav>
 
             <div className="container">
                 <h1>MY LIST OF COMMUNITY SERVICE SLIP</h1>
                 <div className="content-container">
-                    <table className="my-violation-table">
+                    <table className="my-cslip-table">
                         <thead>
                             <tr>
                                 <th>STUDENT NAME</th>
@@ -87,10 +92,10 @@ const CsSlipStudent = () => {
                                     <td>{csSlip.areaOfCommServId}</td>
                                     <td>
                                         <button
-                                            className="action-button"
+                                            className="eye-button"
                                             onClick={() => handleViewClick(csSlip)}
                                         >
-                                            View
+                                            <img src={view} alt="view" className="view-icon"/>
                                         </button>
                                     </td>
                                 </tr>

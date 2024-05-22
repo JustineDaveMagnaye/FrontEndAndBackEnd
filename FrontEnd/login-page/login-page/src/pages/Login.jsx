@@ -2,9 +2,13 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import '../styles/Login.css';
+
 import { FaUser } from "react-icons/fa";
 import { TbEyeClosed, TbEyeUp } from "react-icons/tb";
+import logo from '../assets/logo.png';
+
 import { jwtDecode } from 'jwt-decode';
+
 
 const Login = () => {
     const navigate = useNavigate();
@@ -68,31 +72,46 @@ const Login = () => {
     };
 
     return (
-        <div className="wrapper">
+        <div className="semi-body">
             <div className="form-box-login">
-                <form onSubmit={handleLogin}>
-                    <h1>Login</h1>
-                    <div className="input-box">
+                <form onSubmit={handleLogin} className="form-container-login">
+                    <div className="header">
+                        <div className="logo">
+                            <img src={logo} alt="Logo" id="logo"/>
+                        </div>
+                        <h1>Login</h1>
+                    </div>
+
+                    <div className="field-box">
                         <label>Username</label>
-                        <input type="text" required onChange={(e) => setUsername(e.target.value)} />
-                        <FaUser className="icon" />
+                        <div className="insert">
+                            <input type="text" required onChange={(e) => setUsername(e.target.value)} />
+                            <FaUser className="icon" />
+                        </div>
                     </div>
-                    <div className="input-box">
+
+                    <div className="field-box field-box-password">
                         <label>Password</label>
-                        <input type={showPassword ? "text" : "password"} required onChange={(e) => setPassword(e.target.value)} />
-                        {showPassword ? (
-                            <TbEyeUp className="icon" onClick={togglePasswordVisibility} />
-                        ) : (
-                            <TbEyeClosed className="icon" onClick={togglePasswordVisibility} />
-                        )}
+                        <div className="insert">
+                            <input type={showPassword ? "text" : "password"} required onChange={(e) => setPassword(e.target.value)} />
+                            {showPassword ? (
+                                <TbEyeUp className="icon" onClick={togglePasswordVisibility} />
+                            ) : (
+                                <TbEyeClosed className="icon" onClick={togglePasswordVisibility} />
+                            )}
+                        </div>
+                        
+                        <div className="forgot-password-link">
+                            <a href="account/forgot-password">Forgot password?</a>
+                        </div>    
                     </div>
-                    <div className="forgot-password">
-                        <a href="account/forgot-password">Forgot password?</a>
-                    </div>
+
                     {errorMessage && <p className="error-message">{errorMessage}</p>}
-                    <button type="submit">Login</button>
+
+                    <button type="submit" className="login">Login</button>
+
                     <div className="register-link">
-                        <p>Don't have an Account?<a href="account/create">Click here</a></p>
+                        <p className="noAcc">Don't have an Account?<a className="click" href="account/create">Click here</a></p>
                     </div>
                 </form>
             </div>

@@ -2,7 +2,10 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Axios from 'axios';
 import '../styles/CreateAccount.css';
+
+import { FaUser } from "react-icons/fa";
 import { TbEyeClosed, TbEyeUp } from "react-icons/tb";
+import logo from '../assets/logo.png';
 
 const RegisterForm = () => {
     const navigate = useNavigate();
@@ -70,11 +73,19 @@ const RegisterForm = () => {
     };
 
     return (
-        <div className="wrappers">
-            <div className="form-box-login">
-                <h1 className='header'>Register</h1>
+        <div className="create-account">
+            <div className="form-box-register">
+                    <div className="header">
+                        <div className="logo">
+                            <img src={logo} alt="Logo" id="logo"/>
+                        </div>
+                        <h1>Register</h1>
+                    </div>
+
                 {errorMessage && <p className="error-message">{errorMessage}</p>}
-                <form onSubmit={handleSubmit}>
+                
+                <form onSubmit={handleSubmit} className="form-container">
+                
                     <div className="input-box">
                         <label>User Type:</label>
                         <select
@@ -91,16 +102,21 @@ const RegisterForm = () => {
                     </div>
                     <div className="input-box">
                         <label>Username:</label>
-                        <input type="text" name="username" value={formData.username} onChange={handleChange} />
+                        <div className="insert">
+                            <input type="text" name="username" value={formData.username} onChange={handleChange} />
+                            <FaUser className="icon" />
+                        </div>
                     </div>
                     <div className="input-box">
                         <label>Password</label>
+                        <div className="insert">
                             <input type={showPassword ? "text" : "password"} required onChange={(e) => setFormData({ ...formData, password: e.target.value })} />
                             {showPassword ? (
                                 <TbEyeUp className="icon" onClick={togglePasswordVisibility} />
                             ) : (
                                 <TbEyeClosed className="icon" onClick={togglePasswordVisibility} />
                             )}
+                        </div>    
                     </div> 
                     {userType !== 'guest' && (
                         <div className="input-box">

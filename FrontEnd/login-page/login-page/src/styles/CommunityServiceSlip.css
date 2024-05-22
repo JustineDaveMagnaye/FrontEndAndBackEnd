@@ -10,123 +10,146 @@
 }
 
 .cs-slip-page-admin {
-    width: 100vw;
-    height: auto;
-    margin: 0;
-    padding: 0;
+    position: fixed; 
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     background-color: #D9D9D9;
+    overflow: auto; 
     display: grid;
     justify-items: center;
     align-content: start;
 }
 
 .csSlipcontainer{
-    margin-top: 5vw;
-    width: 95vw;
+    margin-top: 75px;
+    margin-bottom: 80px;
+    width: 95%;
     background-color: #fff;
     display: grid;
     justify-items: center;
     align-content: start;
 }
 
-h1{
-    font-weight: 500;
-    padding: .8vw 3vw;
+h1 {
+    font-weight: 700;
+    padding: .5vw 3vw;
     width: 100%;
     text-align: left;
-    font-size: 1.7vw;
+    font-size: 28px;
 }
 
-.navbar {
+.nav-bar {
     position: fixed;
-    
     margin: 0;
     top: 0;
     left: 0;
     width: 100%;
+    height: 50px;
     background-color: #0C356A;
     z-index: 999;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1vw 3vw;
+    padding: 0 3vw;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 1.5vw;
 }
 
 .rc-logo {
-    max-width: 100px;
+    max-width: 200px;
 }
 
 .nav-links a {
-    margin-right: 50px;
     text-decoration: none;
     color: #fff;
     transition: color 0.3s;
+    font-size: 14px;
+    font-weight: 700;
 }
 
 .nav-links a:hover {
     color: #d1d1d1;
+    border-bottom: 1.5px solid white;
+}
+
+.profile {
+    max-width: 24px;
 }
 
 .cs-slip-container{ 
+    border-top: .1vw solid black;
     display: grid;
     justify-items: center;
     align-content: start;
-    padding: 1.5vw 3vw;
+    padding: 20px 3vw;
     width: 100%;
-}
-
-select:focus{
-    outline: none;
 }
 
 .input-container {
     flex-wrap: wrap;
     display: flex;
-    justify-content: center;
+    justify-content: start;
     align-items: center;
-    margin-bottom: 1vw;
+    margin-bottom: 12px;
     width: 100%;
-    gap: 2.5vw;
+    gap: 25px;
 }
 
-label {
-    font-size: .7vw;
+.input-container .field-container label {
+    width: 100%;
+    text-align: left;
+    font-size: 12px;
+    color: #757575;
+    margin-bottom: 5px;
 }
 
 .field-container {
     display: grid;
     justify-items: flex-start;
-    align-content: center;
+    align-content: space-around;
 }
 
-.input-field {
-    width: 28vw;
-    padding: .5vw;
-    font-size: 1vw;
-    border: .1vw solid #757575;
-    border-radius: .5vw;
-    background-color: #fff;
-    height: 2.5vw;
+.input-container input {
+    width: 300px;
+    padding: 3px 10px;
+    font-size: 14px;
+    border-radius: 5px;
+    background-color: white;
+    border: 1px solid #757575;
+    height: 35px;
+}
+
+.select-field {
+    width: 300px;
+    padding: 3px 10px;
+    font-size: 14px;
+    border-radius: 5px;
+    background-color: white;
+    border: 1px solid #757575;
+    height: 35px;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="6"><path d="M0 0l6 6 6-6H0z" fill="%23444444"/></svg>');
+    background-repeat: no-repeat;
+    background-position-x: calc(100% - 20px);
+    background-position-y: center;
+    transition: background-color 0.3s;
 }
 
 .field-container label{
     font-size: 1vw;
 }
 
-
-input:focus{
+input, select:focus{
     outline: none;
-}
-
-.filter-button {
-    padding: 8px 15px;
-    background-color: #D9D9D9;
-    color: black;
-    border: none;
-    cursor: pointer;
-    border-radius: .5vw;
-    margin-left: 1.5vw;
-    transition: background-color 0.3s;
 }
 
 h2{
@@ -134,56 +157,44 @@ h2{
     font-style: italic;
     width: 100%;
     text-align: left;
-    font-size: 1.7vw;
+    font-size: 24px;
 }
 
 .cs-slip-table {
     width: 100%;
-    max-width: 100%;
-    margin: 1.5vw 0;
+    margin: 25px 0;
     overflow-x: auto;
     border-collapse: collapse; 
 }
 
+.cs-slip-table table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
 .cs-slip-table th,
 .cs-slip-table td {
-    border: 1px solid #5B5B5B;
-    padding: .5vw;
-    font-size: 1vw;
-    background-color: #fff;
+    border: 1px solid #e1e1e1;
+    padding: 5px 10px;
+    font-size: 16px;
     text-align: left;
+}
+
+.cs-slip-table tr:hover {
+    background-color: #f0f0f0;
 }
 
 .cs-slip-table th {
     background-color: #D9D9D9;
 }
 
-.offense-table tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
-
-.action-button {
-    padding: 10px 20px; 
-    font-size: 16px; 
-    background-color: #C6C6C6;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: background-color 0.3s;
-}
-
-.action-button:hover {
-    background-color: #0056b3;
-}
-
 .bottom-container{
     display: grid;
     justify-items: end;
     align-content: end;
-    margin: .5vw 3vw;
+    margin: 10px 0 20px 0;
     width: 100%;
-    gap: 1vw;
 }
 
 .total-container {
@@ -194,22 +205,23 @@ h2{
 }
 
 .input-hours {
-    width: 12vw;
-    padding: .5vw;
-    margin-right: 3vw;
-    font-size: 1vw;
-    border: .1vw solid #757575;
-    border-radius: .5vw;
-    background-color: #fff;
-    height: 2.5vw;
+    width: 200px;
+    font-size: 12px;
+    width: 150px;
+    padding: 3px 10px;
+    border-radius: 5px;
+    background-color: white;
+    border: 1px solid #757575;
+    height: 35px;
 }
 
-
 .create-button {
-    padding: 1vw 2vw; 
-    width: 12vw;
-    font-size: 1vw;
-    margin-right: 2.8vw;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 180px;
+    font-size: 12px;
     background-color: #6BCB77;
     color: #fff;
     border: none;
@@ -220,35 +232,4 @@ h2{
 
 .create-button:hover {
     background-color: #009713;
-}
-
-
-
-@media (max-width: 768px) {
-    .nav-links a {
-        margin-right: 20px;
-        font-size: 14px;
-    }
-
-    .content-container {
-        padding: 15px;
-    }
-
-    .search-input,
-    .filter-button {
-        font-size: 14px;
-        padding: 6px;
-    }
-
-    .action-button,
-    .add-offense-button {
-        padding: 8px 10px;
-        font-size: 14px;
-    }
-
-    .offense-table th,
-    .offense-table td {
-        padding: 10px;
-        font-size: 16px;
-    }
 }

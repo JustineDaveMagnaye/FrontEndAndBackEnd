@@ -4,6 +4,7 @@ import axios from "axios";
 import { debounce } from 'lodash';
 import { useNavigate } from "react-router-dom";
 import logo from '../assets/logo_new.png';
+import user from '../assets/user.png';
 
 const CsSlipPageAdmin = () => {
     const [formData, setFormData] = useState({
@@ -187,11 +188,11 @@ const CsSlipPageAdmin = () => {
             <nav className="nav-bar">
                 <img src={logo} alt="Logo" className="rc-logo"/>
                 <div className="nav-links">
-                    <a href="/admin/offense">STUDENTS OFFENSE</a>
-                    <a href="/admin/violation">STUDENTS VIOLATION</a>
-                    <a href="/admin/cs-list">STUDENTS LIST</a>
-                    <a href="/admin/cs-report">STUDENTS REPORT</a>
-                    <a href="#" onMouseDown={handleLogout}>LOGOUT</a>
+                    <a className="nav-link" href="/admin/offense">Offense</a>
+                    <a className="nav-link" href="/admin/violation">Violation</a>
+                    <a className="nav-link" href="/admin/cs-list">CS Slips</a>
+                    <a className="nav-link" href="#" onMouseDown={handleLogout}>Logout</a>
+                    <img src={user} alt="profile" className="profile"/>
                 </div>
             </nav>
             <div className="csSlipcontainer">
@@ -201,27 +202,27 @@ const CsSlipPageAdmin = () => {
                         <div className="input-container">
                             <div className="field-container">
                                 <label>Student ID:</label>
-                                <input type="text" className="input-field" name="studentId" value={formData.studentId} onChange={handleInputChange} />
+                                <input type="text" className="cs-input-field" name="studentId" value={formData.studentId} onChange={handleInputChange} />
                             </div>
                             <div className="field-container">
                                 <label>Full Name:</label>
-                                <input type="text" className="input-field" name="name" value={                                formData.name} onChange={handleInputChange} />
+                                <input type="text" className="cs-input-field" name="name" value={                                formData.name} onChange={handleInputChange} />
                             </div>
                             <div className="field-container">
                                 <label>Section:</label>
-                                <input type="text" className="input-field" name="section" value={formData.section} onChange={handleInputChange} />
+                                <input type="text" className="cs-input-field" name="section" value={formData.section} onChange={handleInputChange} />
                             </div>
                             <div className="field-container">
                                 <label>Cluster Head:</label>
-                                <input type="text" className="input-field" name="head" value={formData.head} onChange={handleInputChange} />
+                                <input type="text" className="cs-input-field" name="head" value={formData.head} onChange={handleInputChange} />
                             </div>
                             <div className="field-container">
                                 <label>Hours to Deduct:</label>
-                                <input type="text" className="input-field" name="deduction" value={formData.deduction} onChange={handleInputChange} />
+                                <input type="text" className="cs-input-field" name="deduction" value={formData.deduction} onChange={handleInputChange} />
                             </div>
                             <div className="field-container">
                                 <label>Area of Community Service:</label>
-                                <select className="input-field" name="areaId" value={formData.areaId} onChange={handleInputChange}>
+                                <select className="select-field" name="areaId" value={formData.areaId} onChange={handleInputChange}>
                                     <option value="">Select an area</option>
                                     {stations.map(station => (
                                         <option key={station.id} value={station.id}>{station.stationName}</option>
@@ -230,7 +231,7 @@ const CsSlipPageAdmin = () => {
                             </div>
                             <div className="field-container">
                                 <label>Reason for Community Service:</label>
-                                <input type="text" className="input-field" name="reasonOfCs" value={formData.reasonOfCs} onChange={handleInputChange} />
+                                <input type="text" className="cs-input-field" name="reasonOfCs" value={formData.reasonOfCs} onChange={handleInputChange} />
                             </div>
                         </div>
                         <table className="cs-slip-table">
