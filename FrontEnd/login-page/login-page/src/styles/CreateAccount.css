@@ -1,111 +1,151 @@
-.wrappers {
-    position: relative;
-    width: 500px;
-    height: 650px;
-    background: #fff;
-    border-radius: 10px;
-    color: black;
+.create-account {
+    display: grid;                      
+    justify-items: center;           
+    align-content: start;                 
+    font-family: sans-serif;            
+    min-height: 100vh; 
+    min-width: 100%;
 }
 
-.wrappers .form-box-login {
-    margin-top: 3vw;
-    width: 100%;
-    padding: 40px;
+.form-box-register {
+    width: 500px;     
+    height: 720px;   
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 12px;  
+    color: black;
+    margin-top: 48px;    
+    padding: 27px;        
+    display: grid;                      
+    justify-items: center;           
+    align-content: start; 
+}
+
+.form-container {
+    width: 450px;
+    height: 700px;
+    display: grid;                      
+    justify-items: center;           
+    align-content: start;
+    margin: 0;
+    padding: 0 2vw; 
 }
 
 .header {
+    width: 100%;
+    display: grid;                      
+    justify-items: center;           
+    align-content: center;
+    margin: 0;
+    padding: 0;
+}
+
+.logo {
+    text-align: center;
+    width: 150px;   
+    height: 100px; 
+}
+
+.logo img {
+    max-width: 100%; 
+    max-height: 100%; 
+    width: 100px;   
+    height: auto;  
+}
+
+.header h1{
     font-size: 30px;
+    font-weight: 700;
     text-align: center;
 }
 
-form .input-box {
+.input-box {
+    width: 100%;
+    height: 85px;
+    display: grid;                      
+    justify-items: center;           
+    align-content: center;
+    margin: 0;
+    padding: 0;
+}
+
+.input-box label {
+    width: 100%;
+    text-align: left;
+    font-size: 12px;
+    color: #757575;
+    margin-bottom: 5px;
+}
+
+.input-container {
     position: relative;
     width: 100%;
-    height: 25px;
-    margin: 20px 0 65px 0;
-    justify-content: space-between;
 }
 
-.input-box input {
+.input-container input {
     width: 100%;
-    height: 100%;
-    background: transparent;
-    border-radius: 5px;
-    font-size: 16px;
-    padding: 20px 45px 20px 20px;
-    border: 1px solid gray;
+    height: 50px;
+    background: white;
+    border-radius: 10px;
+    font-size: 14px;
+    padding: 5px 45px 5px 20px; 
+    border: 1px solid #ccc;
 }
 
-.input-box .icon {
+input {
+    width: 100%;
+    height: 50px;
+    background: white;
+    border-radius: 10px;
+    font-size: 14px;
+    padding: 5px 45px 5px 20px; 
+    border: 1px solid #ccc;
+}
+
+.input-container .icon {
     position: absolute;
-    right: 20px;
-    top: 105%;
-    transform: translateY(-0%);
+    right: 15px; 
+    top: 50%; 
+    transform: translateY(-50%); 
     font-size: 20px;
-}
-
-form .forgot-password {
-    display: flex;
-    justify-content: flex-end;
-    font-size: 14.5px;
-    margin-top: -15px;
-    margin-bottom: 10px;
-}
-
-.forgot-password a {
-    text-decoration: none;
-    color: black;
+    pointer-events: auto; 
+    cursor: pointer;
 }
 
 form button {
+    margin-top: 30px; 
     display: flex;
-    margin: 40px auto 0 auto;
     justify-content: center;
     align-items: center;
-    width: 65%;
-    height: 40px;
+    width: 60%;
+    height: 50px;
     border-radius: 10px;
     cursor: pointer;
     font-size: 16px;
-    background: #2a9df4;
+    background: #0174BE;
     color: #fff;
     border: none;
     outline: none;
 }
 
-form .register-link {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 15px;
-}
-
-.register-link p {
-    margin-top: 5px;
-    color: #03254c;
-}
-
-.register-link a {
-    text-decoration: none;
-    color: #03254c;
-}
 .select-style {
     width: 100%;
-    padding: 10px;
+    height: 40px;
+    background: white;
+    border-radius: 10px;
+    font-size: 14px;
+    padding: 5px 45px 5px 20px; 
     border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
-    background-color: #fff;
     color: #000;
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
     background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="6"><path d="M0 0l6 6 6-6H0z" fill="%23444444"/></svg>');
     background-repeat: no-repeat;
-    background-position-x: calc(100% - 10px);
+    background-position-x: calc(100% - 20px);
     background-position-y: center;
     cursor: pointer;
 }
+
 .button-disabled {
     background-color: #d3d3d3; 
     cursor: not-allowed; 

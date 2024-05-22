@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Axios from 'axios';
 import '../styles/OTP.css';
+import logo from '../assets/logo.png';
 
 const OtpForm = () => {
     const navigate = useNavigate();
@@ -55,9 +56,14 @@ const OtpForm = () => {
     };
 
     return (
-        <div className="otp-form-container">
-            <h1>Verify OTP</h1>
-            <form onSubmit={handleSubmit}>
+        <div className="form-box-otp">
+                <div className="header">
+                    <div className="logo">
+                        <img src={logo} alt="Logo" id="logo"/>
+                    </div>
+                    <h1>Verify OTP</h1>
+                </div>
+            <form onSubmit={handleSubmit}  className="form-container">
                 <div className="input-box">
                     <label>Username:</label>
                     <input 

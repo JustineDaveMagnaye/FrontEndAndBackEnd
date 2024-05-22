@@ -1,27 +1,63 @@
-.otp-form-container {
-    width: 400px;
-    margin: 3vw auto;
-    padding: 20px;
-    background-color: #f4f4f4;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+.form-box-otp {
+    width: 500px;     
+    height: 530px;   
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 12px;  
+    color: black;
+    margin-top: 48px;    
+    padding: 27px;        
+    display: grid;                      
+    justify-items: center;           
+    align-content: start; 
 }
 
-.otp-form-container h1 {
+.form-container {
+    width: 450px;
+    height: 500px;
+    display: grid;                      
+    justify-items: center;           
+    align-content: start;
+    margin: 0;
+    padding: 0 2vw; 
+}
+
+.header {
+    width: 100%;
+    display: grid;                      
+    justify-items: center;           
+    align-content: center;
+    margin: 0;
+    padding: 0;
+}
+
+.logo {
     text-align: center;
-    margin-bottom: 20px;
-    font-size: 24px;
-    color: #333;
+    width: 150px;   
+    height: 100px; 
+}
+
+.logo img {
+    max-width: 100%; 
+    max-height: 100%; 
+    width: 100px;   
+    height: auto;  
+}
+
+.header h1{
+    font-size: 30px;
+    font-weight: 700;
+    text-align: center;
 }
 
 button {
-    width: 100%;
+    width: 60%;
+    height: 50px;
     padding: 10px;
     font-size: 16px;
     color: #fff;
     background-color: #28a745;
     border: none;
-    border-radius: 4px;
+    border-radius: 10px;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
@@ -39,5 +75,5 @@ button:hover:enabled {
     margin-top: 15px;
     text-align: center;
     font-size: 14px;
-    color: #d9534f;
+    color: #218838;
 }

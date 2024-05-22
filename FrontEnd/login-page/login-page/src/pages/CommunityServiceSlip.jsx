@@ -187,11 +187,10 @@ const CsSlipPageAdmin = () => {
             <nav className="nav-bar">
                 <img src={logo} alt="Logo" className="rc-logo"/>
                 <div className="nav-links">
-                    <a href="/admin/offense">STUDENTS OFFENSE</a>
-                    <a href="/admin/violation">STUDENTS VIOLATION</a>
-                    <a href="/admin/cs-list">STUDENTS LIST</a>
-                    <a href="/admin/cs-report">STUDENTS REPORT</a>
-                    <a href="#" onMouseDown={handleLogout}>LOGOUT</a>
+                    <a className="nav-link" href="/admin/offense">Offense</a>
+                    <a className="nav-link" href="/admin/violation">Violation</a>
+                    <a className="nav-link" href="/admin/cs-list">CS Slips</a>
+                    <a className="nav-link" href="#" onMouseDown={handleLogout}>Logout</a>
                 </div>
             </nav>
             <div className="csSlipcontainer">

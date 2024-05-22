@@ -3,6 +3,9 @@ import axios from "axios";
 import '../styles/ViolationTableAdmin.css';
 import { useNavigate } from "react-router-dom";
 import logo from '../assets/logo_new.png';
+import edit from '../assets/compose.png';
+import user from '../assets/user.png';
+
 import AddViolationModal from './AddViolationModal';
 import EditViolationModal from './EditViolationModal';
 
@@ -132,13 +135,13 @@ const ViolationPageAdmin = () => {
     return (
         <div className="violation-page-admin">
             <nav className="nav-bar">
-                <img src={logo} alt="Logo" className="rc-logo" />
+                <img src={logo} alt="Logo" className="rc-logo"/>
                 <div className="nav-links">
-                    <a href="/admin/offense">STUDENTS OFFENSE</a>
-                    <a href="/admin/violation">STUDENTS VIOLATION</a>
-                    <a href="/admin/cs-list">STUDENTS LIST</a>
-                    <a href="/admin/cs-report">STUDENTS REPORT</a>
-                    <a href="#" onMouseDown={handleLogout}>LOGOUT</a>
+                    <a className="nav-link" href="/admin/offense">Offense</a>
+                    <a className="nav-link" href="/admin/violation">Violation</a>
+                    <a className="nav-link" href="/admin/cs-list">CS Slips</a>
+                    <a className="nav-link" href="#" onMouseDown={handleLogout}>Logout</a>
+                    <img src={user} alt="profile" className="profile"/>
                 </div>
             </nav>
             <div className="container">
@@ -193,7 +196,7 @@ const ViolationPageAdmin = () => {
                                     <td>{violation.disciplinaryAction}</td>
                                     <td>{violation.csHours}</td>
                                     <td>
-                                        <button className="action-button" onClick={() => openEditModal(violation)}>Edit</button>
+                                        <button className="edit-button" onClick={() => openEditModal(violation)}><img src={edit} alt="Edit" className="edit-icon"/></button>
                                     </td>
                                 </tr>
                             ))}
@@ -205,9 +208,9 @@ const ViolationPageAdmin = () => {
                             )}
                         </tbody>
                     </table>
-                    <div className="violation-btns-container">
-                        <a href="/admin/cs-slip"><button className="create-cs-button">CREATE CS SLIP</button></a>
-                        <button className="add-violation-button" onClick={openAddModal}>ADD VIOLATION</button>
+                    <div className="btns-container">
+                        <a href="/admin/cs-slip"><button className="create-cs-btn">CREATE CS SLIP</button></a>
+                        <button className="add-violation-btn" onClick={openAddModal}>ADD VIOLATION</button>
                     </div>
 
                 </div>

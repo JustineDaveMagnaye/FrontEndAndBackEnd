@@ -2,7 +2,10 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/ForgotPassword.css';
+
 import { TbEyeClosed, TbEyeUp } from "react-icons/tb";
+import logo from '../assets/logo.png';
+
 
 const ForgotPassword = () => {
     const navigate = useNavigate();
@@ -24,7 +27,7 @@ const ForgotPassword = () => {
         if (name === 'username') setUsername(value);
         if (name === 'otp') setOtp(value);
         if (name === 'password') setPassword(value);
-        setErrors({ ...errors, [name]: '' }); // Clear error message when user starts typing
+        setErrors({ ...errors, [name]: '' }); 
     };
 
     const handleSubmit = async (e) => {
@@ -93,12 +96,20 @@ const ForgotPassword = () => {
     };
 
     return (
-        <div className="wrapper">
-            <div className="form-box-login">
-                <form onSubmit={handleSubmit}>
-                    <h1>Forgot Password</h1>
+        <div className="forgot-password">
+            <div className="form-box-forgot">
+                <form onSubmit={handleSubmit} className="form-container-forgot">
+
+                    <div className="header">
+                        <div className="logo">
+                            <img src={logo} alt="Logo" id="logo"/>
+                        </div>
+                        <h1>Forgot Password</h1>
+                    </div>
+
                     {errors.form && <p className="error-message">{errors.form}</p>}
-                    <div className="input-box">
+                    
+                    <div className="label-input-box">
                         <label>Username</label>
                         <input
                             type="text"
@@ -111,7 +122,7 @@ const ForgotPassword = () => {
                     </div>
                     {showPasswordAndOTP && (
                         <>
-                            <div className="input-box">
+                            <div className="label-input-box">
                                 <label>OTP</label>
                                 <input
                                     type="text"
@@ -122,20 +133,23 @@ const ForgotPassword = () => {
                                 />
                                 {errors.otp && <p className="error-message">{errors.otp}</p>}
                             </div>
-                            <div className="input-box">
+                            <div className="label-input-box">
                                 <label>Password</label>
-                                <input
-                                    type={showPassword ? "text" : "password"}
-                                    name="password"
-                                    required
-                                    value={password}
-                                    onChange={handleChange}
-                                />
-                                {showPassword ? (
-                                    <TbEyeUp className="icon" onClick={togglePasswordVisibility} />
-                                ) : (
-                                    <TbEyeClosed className="icon" onClick={togglePasswordVisibility} />
-                                )}
+                                <div className='show-password'>
+                                    <input
+                                        type={showPassword ? "text" : "password"}
+                                        name="password"
+                                        required
+                                        value={password}
+                                        onChange={handleChange}
+                                    />
+                                    {showPassword ? (
+                                        <TbEyeUp className="icon" onClick={togglePasswordVisibility} />
+                                    ) : (
+                                        <TbEyeClosed className="icon" onClick={togglePasswordVisibility} />
+                                    )}
+                                </div>
+                                
                                 {errors.password && <p className="error-message">{errors.password}</p>}
                             </div>
                         </>

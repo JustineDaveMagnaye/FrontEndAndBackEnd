@@ -3,6 +3,8 @@ import axios from "axios";
 import '../styles/ListCommunityServiceReport.css';
 import { useNavigate } from "react-router-dom";
 import logo from '../assets/logo_new.png';
+import user from '../assets/user.png';
+
 const CsListPageAdmin = () => {
     const [csSlips, setCsSlips] = useState([]); // hook pang store lahat ng data sa community service slips
     const [filteredCsSlips, setFilteredCsSlips] = useState([]); // hook pang store sa filtered slips
@@ -70,29 +72,29 @@ const CsListPageAdmin = () => {
     };
     return (
         <div className="list-cs-page-admin">
-           <nav className="nav-bar">
+            <nav className="nav-bar">
                 <img src={logo} alt="Logo" className="rc-logo"/>
                 <div className="nav-links">
-                    <a href="/admin/offense">STUDENTS OFFENSE</a>
-                    <a href="/admin/violation">STUDENTS VIOLATION</a>
-                    <a href="/admin/cs-list">STUDENTS LIST</a>
-                    <a href="/admin/cs-report">STUDENTS REPORT</a>
-                    <a href="#" onMouseDown={handleLogout}>LOGOUT</a>
+                    <a className="nav-link" href="/admin/offense">Offense</a>
+                    <a className="nav-link" href="/admin/violation">Violation</a>
+                    <a className="nav-link" href="/admin/cs-list">CS Slips</a>
+                    <a className="nav-link" href="#" onMouseDown={handleLogout}>Logout</a>
+                    <img src={user} alt="profile" className="profile"/>
                 </div>
             </nav>
-            <div className="container">
+            <div className="list-cs-container">
                 <h1>List of Community Service Reports</h1>
                 <div className="content-container">
-                    <div className="list-cs-report-search-filter">
+                    <div className="list-cs-search-filter">
                         <input
                             type="text"
                             placeholder="Search by student name"
-                            className="list-cs-report-search-input"
+                            className="list-cs-search-input"
                             value={searchInput}
                             onChange={handleSearchChange}
                         />
                     </div>
-                    <table className="offense-table">
+                    <table className="list-cs-table">
                         <thead>
                             <tr>
                                 <th>STUDENT ID</th>

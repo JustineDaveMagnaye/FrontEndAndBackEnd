@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/offenseTableAdmin.css';
 import logo from '../assets/logo_new.png';
+import edit from '../assets/compose.png';
+import user from '../assets/user.png';
+
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import AddOffenseModal from './AddOffenseModal';
@@ -158,26 +161,26 @@ const OffensePageAdmin = () => {
             <nav className="nav-bar">
                 <img src={logo} alt="Logo" className="rc-logo"/>
                 <div className="nav-links">
-                    <a href="/admin/offense">STUDENTS OFFENSE</a>
-                    <a href="/admin/violation">STUDENTS VIOLATION</a>
-                    <a href="/admin/cs-list">STUDENTS LIST</a>
-                    <a href="/admin/cs-report">STUDENTS REPORT</a>
-                    <a href="#" onMouseDown={handleLogout}>LOGOUT</a>
+                    <a className="nav-link" href="/admin/offense">Offense</a>
+                    <a className="nav-link" href="/admin/violation">Violation</a>
+                    <a className="nav-link" href="/admin/cs-list">CS Slips</a>
+                    <a className="nav-link" href="#" onMouseDown={handleLogout}>Logout</a>
+                    <img src={user} alt="profile" className="profile"/>
                 </div>
             </nav>
-            <div className="container">
-                <h1>OFFENSE</h1>
-                <div className="content-container">
-                    <div className="offense-search-filter">
+            <div className="offense-container">
+                <h1 className='head'>OFFENSE</h1>
+                <div className="contents">
+                    <div className="search-offense-filter">
                         <input
                             type="text"
                             placeholder="Search by offense"
-                            className="offense-search-input"
+                            className="search-offense-input"
                             value={searchInput}
                             onChange={handleSearchChange}
                         />
                         <select
-                            className="filter-button"
+                            className="filter-offense-button"
                             value={filterType}
                             onChange={handleFilterChange}
                         >
@@ -186,21 +189,21 @@ const OffensePageAdmin = () => {
                             <option value="Minor">Minor</option>
                         </select>
                     </div>
-                    <table className="offense-table">
+                    <table className="offense-table-container">
                         <thead>
                             <tr>
-                                <th>OFFENSE</th>
-                                <th>TYPE</th>
-                                <th>ACTION</th>
+                                <th className='name-column'>OFFENSE</th>
+                                <th className='type-column'>TYPE</th>
+                                <th className='action-column'>ACTION</th>
                             </tr>
                         </thead>
                         <tbody>
                             {filteredOffenses.map(offense => (
                                 <tr key={offense.id}>
-                                    <td>{offense.description}</td>
-                                    <td>{offense.type}</td>
-                                    <td>
-                                        <button className="action-button" onClick={() => openEditModal(offense)}>Edit</button>
+                                    <td className='name-column'>{offense.description}</td>
+                                    <td className='type-column'>{offense.type}</td>
+                                    <td className='action-colum'>
+                                        <button className="edit-button" onClick={() => openEditModal(offense)}><img src={edit} alt="Edit" className="edit-icon"/></button>
                                     </td>
                                 </tr>
                             ))}
@@ -214,7 +217,7 @@ const OffensePageAdmin = () => {
                     </table>
 
                     <div className="btns">
-                        <button className="add-offense-button" onClick={openAddModal}>ADD OFFENSE</button>
+                        <button className="add-offense-btn" onClick={openAddModal}>ADD OFFENSE</button>
                     </div>
                 </div>
             </div>
