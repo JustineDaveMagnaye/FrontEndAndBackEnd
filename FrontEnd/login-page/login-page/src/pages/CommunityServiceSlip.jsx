@@ -11,47 +11,65 @@ const CsSlipPageAdmin = () => {
         studentId: '',
         deduction: '',
         areaId: '',
-        reasonOfCs: ''
+        reasonOfCs: '',
+        name: '',
+        section: '',
+        head: ''
     });
 
     const [stations, setStations] = useState([]);
     const [violations, setViolations] = useState([]);
     const [totalHoursRequired, setTotalHoursRequired] = useState('');
+    const [students, setStudents] = useState([]);
+    const [message, setMessage] = useState('');
+    const [errors, setErrors] = useState({});
+    const [successMessage, setSuccessMessage] = useState('');
+    const [deductionError, setDeductionError] = useState('');
+    const [reasonError, setReasonError] = useState('');
+
     const navigate = useNavigate();
+
     useEffect(() => {
-        const role = localStorage.getItem('role')
-        let exp = localStorage.getItem('exp')
+        const role = localStorage.getItem('role');
+        let exp = localStorage.getItem('exp');
         let currentDate = new Date();
-        if(exp * 1000 < currentDate.getTime()){
-            navigate('/login')
+
+        if (exp * 1000 < currentDate.getTime()) {
+            navigate('/login');
         }
-        if(role != "ROLE_ROLE_ADMIN"){
-            if(role === "ROLE_ROLE_EMPLOYEE"){
+        if (role !== "ROLE_ROLE_ADMIN") {
+            if (role === "ROLE_ROLE_EMPLOYEE") {
                 navigate('/employee/cs-list');
-            } else if (role === "ROLE_ROLE_STUDENT"){
-                navigate('/student/violation')
-            } else if (role === "ROLE_ROLE_GUEST"){
-                navigate('/guest/violation')
+            } else if (role === "ROLE_ROLE_STUDENT") {
+                navigate('/student/violation');
+            } else if (role === "ROLE_ROLE_GUEST") {
+                navigate('/guest/violation');
             } else {
-                navigate('/login')
+                navigate('/login');
             }
         }
-        const fetchStations = async () => {
+        const fetchData = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/Station/stations', {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                    }
-                });
-                setStations(response.data);
+                const token = localStorage.getItem('token');
+                const headers = {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                };
+                const [stationsResponse, studentsResponse] = await Promise.all([
+                    axios.get('http://localhost:8080/Station/stations', { headers }),
+                    axios.get('http://localhost:8080/Student/students', { headers })
+                ]);
+                setStations(stationsResponse.data);
+                setStudents(studentsResponse.data);
             } catch (error) {
-                console.error('Error fetching stations:', error);
+                console.error('Error fetching data:', error);
+                setMessage('An error occurred while fetching data.');
             }
         };
-        fetchStations();
-    }, []);
+
+        fetchData();
+    }, [navigate]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -72,7 +90,7 @@ const CsSlipPageAdmin = () => {
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('An error occurred while fetching data.');
+                setMessage('An error occurred while fetching data.');
             }
         };
 
@@ -85,27 +103,64 @@ const CsSlipPageAdmin = () => {
             ...prevState,
             [name]: value
         }));
+
+
+        if (errors[name]) {
+            const newErrors = { ...errors };
+            delete newErrors[name];
+            setErrors(newErrors);
+        }
+    };
+
+    const validate = () => {
+        const errors = {};
+        if (!formData.studentId) {
+            errors.studentId = 'Student ID is required';
+        }
+        if (!formData.deduction) {
+            errors.deduction = 'Hours to Deduct are required';
+            setDeductionError('Hours to Deduct are required');
+        } else if (isNaN(formData.deduction) || formData.deduction <= 0) {
+            errors.deduction = 'Hours to Deduct must be a positive number';
+            setDeductionError('Hours to Deduct must be a positive number');
+        } else {
+            setDeductionError('');
+        }
+        if (!formData.areaId) {
+            errors.areaId = 'Area of Community Service is required';
+        }
+        if (!formData.reasonOfCs) {
+            errors.reasonOfCs = 'Reason for Community Service is required';
+            setReasonError('Reason for Community Service is required');
+        } else {
+            setReasonError('');
+        }
+        return errors;
     };
 
     const fetchStudentDetails = async (studentId) => {
         try {
-            const response = await axios.get(`http://localhost:8080/Student/student/${studentId}`, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            const student = students.find(student => student.studentNumber === studentId);
+            const id = student && student.id;
+            if (id) {
+                const token = localStorage.getItem('token');
+                const response = await axios.get(`http://localhost:8080/Student/student/${id}`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'Authorization': `Bearer ${token}`,
+                    }
+                });
+                const studentData = response.data;
+                if (studentData !== null) {
+                    setFormData(prevState => ({
+                        ...prevState,
+                        name: `${studentData.lastName}, ${studentData.firstName} ${studentData.middleName}`,
+                        section: studentData.section.sectionCourse,
+                        head: studentData.section.clusterHead
+                    }));
                 }
-            });
-            const student = response.data;
-            if (student === null) {
-                return;
             }
-            setFormData(prevState => ({
-                ...prevState,
-                name: `${student.lastName}, ${student.firstName} ${student.middleName}`,
-                section: student.section.sectionCourse,
-                head: student.section.clusterHead
-            }));
         } catch (error) {
             console.error('Error getting student info:', error);
         }
@@ -113,14 +168,19 @@ const CsSlipPageAdmin = () => {
 
     const fetchStudentViolation = async (studentId) => {
         try {
-            const response = await axios.get(`http://localhost:8080/Violation/violation/student/${studentId}`, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                }
-            });
-            setViolations(response.data);
+            const student = students.find(student => student.studentNumber === studentId);
+            const id = student && student.id;
+            if (id) {
+                const token = localStorage.getItem('token');
+                const response = await axios.get(`http://localhost:8080/Violation/violation/student/${id}`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'Authorization': `Bearer ${token}`,
+                    }
+                });
+                setViolations(response.data);
+            }
         } catch (error) {
             console.error('Error getting violations:', error);
         }
@@ -128,60 +188,85 @@ const CsSlipPageAdmin = () => {
 
     const fetchTotalHoursRequired = async (studentId) => {
         try {
-            const response = await axios.get(`http://localhost:8080/CSSlip/totalCsHours/${studentId}`, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                }
-            });
-            setTotalHoursRequired(response.data);
+            const student = students.find(student => student.studentNumber === studentId);
+            const id = student && student.id;
+            if (id) {
+                const token = localStorage.getItem('token');
+                const response = await axios.get(`http://localhost:8080/CSSlip/totalCsHours/${id}`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'Authorization': `Bearer ${token}`,
+                    }
+                });
+                setTotalHoursRequired(response.data);
+            }
         } catch (error) {
             console.error('Error getting total hours required:', error);
         }
     };
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
+    e.preventDefault();
+    const validationErrors = validate();
+    if (Object.keys(validationErrors).length > 0) {
+        setErrors(validationErrors);
+        return;
+    }
+    try {
+        if (parseInt(formData.deduction) > parseInt(totalHoursRequired)) {
+            setDeductionError('Hours to Deduct cannot be higher than total hours');
+            return;
+        }
+        const token = localStorage.getItem('token');
+        const student = students.find(student => student.studentNumber === formData.studentId);
+        const id = student && student.id;
+        if (id) {
             const payload = {
-                id: formData.studentId, 
-                student: { id: formData.studentId }, 
+                id,
+                student: { id },
                 reasonOfCs: formData.reasonOfCs,
                 areaOfCommServ: { id: formData.areaId },
                 deduction: formData.deduction
             };
-
             const response = await axios.post('http://localhost:8080/CSSlip/csSlip', payload, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Authorization': `Bearer ${token}`,
                 }
             });
 
             if (response && response.data) {
-                alert(response.data);
+                setMessage('');
+                setSuccessMessage('Community Service Slip created successfully!');
+                setTimeout(() => {
+                    setSuccessMessage('');
+                }, 5000); 
             } else {
                 console.error('Response data is undefined:', response);
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            if (error.response && error.response.data && error.response.data.message) {
-                alert(error.response.data.message);
-            } else {
-                alert('An error occurred while processing the request.');
+                setMessage('Unexpected error occurred.');
             }
         }
-    };
+    } catch (error) {
+        console.error('Error:', error);
+        if (error.response && error.response.data && error.response.data.message) {
+            setMessage(error.response.data.message);
+        } else {
+            setMessage('An error occurred while processing the request.');
+        }
+    }
+};
+
 
     const debouncedFetchStudentDetails = debounce(fetchStudentDetails, 300);
     const debouncedFetchStudentViolation = debounce(fetchStudentViolation, 300);
+
     const handleLogout = () => {
-        localStorage.setItem('token', '');
-        localStorage.setItem('role', '');
-        localStorage.setItem('exp', '');
-        navigate('/login')
+        localStorage.removeItem('token');
+        localStorage.removeItem('role');
+        localStorage.removeItem('exp');
+        navigate('/login');
     };
     return (
         <div className="cs-slip-page-admin">
@@ -203,22 +288,24 @@ const CsSlipPageAdmin = () => {
                             <div className="field-container">
                                 <label>Student ID:</label>
                                 <input type="text" className="cs-input-field" name="studentId" value={formData.studentId} onChange={handleInputChange} />
+                                {errors.studentId && <span className="error">{errors.studentId}</span>}
                             </div>
                             <div className="field-container">
                                 <label>Full Name:</label>
-                                <input type="text" className="cs-input-field" name="name" value={                                formData.name} onChange={handleInputChange} />
+                                <input type="text" disabled className="cs-input-field" name="name" value={                                formData.name} onChange={handleInputChange} />
                             </div>
                             <div className="field-container">
                                 <label>Section:</label>
-                                <input type="text" className="cs-input-field" name="section" value={formData.section} onChange={handleInputChange} />
+                                <input type="text" disabled className="cs-input-field" name="section" value={formData.section} onChange={handleInputChange} />
                             </div>
                             <div className="field-container">
                                 <label>Cluster Head:</label>
-                                <input type="text" className="cs-input-field" name="head" value={formData.head} onChange={handleInputChange} />
+                                <input type="text" disabled className="cs-input-field" name="head" value={formData.head} onChange={handleInputChange} />
                             </div>
                             <div className="field-container">
                                 <label>Hours to Deduct:</label>
                                 <input type="text" className="cs-input-field" name="deduction" value={formData.deduction} onChange={handleInputChange} />
+                                {deductionError && <span className="error">{deductionError}</span>}
                             </div>
                             <div className="field-container">
                                 <label>Area of Community Service:</label>
@@ -228,10 +315,12 @@ const CsSlipPageAdmin = () => {
                                         <option key={station.id} value={station.id}>{station.stationName}</option>
                                     ))}
                                 </select>
+                                {errors.areaId && <span className="error">{errors.areaId}</span>}
                             </div>
                             <div className="field-container">
                                 <label>Reason for Community Service:</label>
                                 <input type="text" className="cs-input-field" name="reasonOfCs" value={formData.reasonOfCs} onChange={handleInputChange} />
+                                {reasonError && <span className="error">{reasonError}</span>}
                             </div>
                         </div>
                         <table className="cs-slip-table">
@@ -255,9 +344,11 @@ const CsSlipPageAdmin = () => {
                         <div className="bottom-container">
                             <div className="total-container">
                                 <label>Total Hours Required: </label>
-                                <input type="text" className="input-hours" name="hoursRequired" value={totalHoursRequired} readOnly />
+                                <input type="text" disabled className="input-hours" name="hoursRequired" value={totalHoursRequired} readOnly />
                             </div>
                             <button type="submit" className="create-button">CREATE</button>
+                            {message && <div className="message error">{message}</div>}
+                            {successMessage && <div className="message success">{successMessage}</div>}
                         </div>
                     </form>
                 </div>
@@ -267,4 +358,3 @@ const CsSlipPageAdmin = () => {
 };
 
 export default CsSlipPageAdmin;
-
