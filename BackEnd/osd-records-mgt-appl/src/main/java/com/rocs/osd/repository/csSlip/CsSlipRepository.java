@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface CsSlipRepository extends JpaRepository<CsSlip, Long> {
     List<CsSlip> findByStudent_FirstNameContainingOrStudent_MiddleNameContainingOrStudent_LastNameContaining(String firstName, String middleName, String lastName);
+    List<CsSlip> findByAreaOfCommServ_StationNameIgnoreCase(String name);
 }

@@ -82,6 +82,11 @@ public class CsSlipServiceImpl implements CsSlipService {
         return csSlips;
     }
 
+    @Override
+    public List<CsSlip> getCsSlipReportByStationName(String name) {
+        return csSlipRepository.findByAreaOfCommServ_StationNameIgnoreCase(name);
+    }
+
     @Transactional
     public CsReport addCsReportToCsSlip(Long csSlipId, CsReport csReport) {
         CsSlip csSlip = csSlipRepository.findById(csSlipId)
