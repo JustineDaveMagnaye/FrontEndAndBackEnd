@@ -93,14 +93,27 @@ const ViolationPageAdmin = () => {
 
     const handleAddViolation = async (newViolation) => {
         try {
-            const response = await axios.post("http://localhost:8080/Violation/violation/addViolation", newViolation, {
+            const formattedViolation = {
+                dateOfNotice: newViolation.dateOfNotice,
+                student: {
+                    id: parseInt(newViolation.studentId)
+                },
+                offense: {
+                    id: parseInt(newViolation.offenseId)
+                },
+                warningNumber: parseInt(newViolation.warningNumber),
+                csHours: parseInt(newViolation.csHours),
+                disciplinaryAction: newViolation.disciplinaryAction
+            };
+
+            const response = await axios.post("http://localhost:8080/Violation/violation/addViolation", formattedViolation, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 }
             });
-            setMessage(response.data);
+            console.log(response.data);
             closeAddModal();
             loadViolations();
         } catch (error) {
