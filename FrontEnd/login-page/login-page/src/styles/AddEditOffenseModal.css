@@ -36,7 +36,8 @@
     font-weight: bold;
 }
 
-.form-group input {
+.form-group input
+.form-group input, select {
     width: 300px;
     padding: 3px 10px;
     font-size: 14px;

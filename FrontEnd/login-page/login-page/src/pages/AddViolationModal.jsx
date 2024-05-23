@@ -1,18 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
+import axios from "axios";
 import '../styles/AddEditViolationModal.css';
 
 const AddViolationModal = ({ isOpen, onClose, onSubmit }) => {
+    const [offenses, setOffenses] = useState([]);
     const [newViolation, setNewViolation] = useState({
         studentId: "",
         studentName: "",
+        type: "",
+        offenseId: "",
+        description: "",
         dateOfNotice: "",
-        occurrence: "",
+        warningNumber: "",
         disciplinaryAction: "",
         csHours: "",
-        approvedBy: "",
-        type: "",
-        description: ""
+        approvedById: "",
     });
 
     const handleInputChange = (e) => {
@@ -24,6 +27,24 @@ const AddViolationModal = ({ isOpen, onClose, onSubmit }) => {
         e.preventDefault();
         onSubmit(newViolation);
     };
+
+    useEffect(() => {
+        const fetchOffenses = async () => {
+            try {
+                const response = await axios.get('http://localhost:8080/Offense/offenses', {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    }
+                });
+                setOffenses(response.data);
+            } catch (error) {
+                console.error('Error fetching offenses:', error);
+            }
+        };
+        fetchOffenses();
+    }, []);
 
     return (
         <Modal isOpen={isOpen} onRequestClose={onClose} className="modal">
@@ -40,15 +61,13 @@ const AddViolationModal = ({ isOpen, onClose, onSubmit }) => {
                         <input type="text" name="studentName" value={newViolation.studentName} onChange={handleInputChange} required />
                     </div>
                     <div className="form-group">
-                        <label>Offense Type</label>
-                        <select name="type" value={newViolation.type} onChange={handleInputChange} required>
-                            <option value="Major">Major</option>
-                            <option value="Minor">Minor</option>
-                        </select>
-                    </div>
-                    <div className="form-group">
                         <label>Offense</label>
-                        <input type="text" name="description" value={newViolation.description} onChange={handleInputChange} required />
+                        <select name="offenseId" value={newViolation.offenseId} onChange={handleInputChange}>
+                            <option value="" disabled>Select an offense</option>
+                            {offenses.map(offense => (
+                                <option key={offense.id} value={offense.id}>{offense.description}</option>
+                            ))}
+                        </select>
                     </div>
                     <div className="form-group">
                         <label>Date of Notice</label>
@@ -56,7 +75,7 @@ const AddViolationModal = ({ isOpen, onClose, onSubmit }) => {
                     </div>
                     <div className="form-group">
                         <label>Number of Occurrence</label>
-                        <input type="text" name="occurrence" value={newViolation.occurrence} onChange={handleInputChange} required />
+                        <input type="text" name="warningNumber" value={newViolation.warningNumber} onChange={handleInputChange} required />
                     </div>
                     <div className="form-group">
                         <label>Disciplinary Action</label>
@@ -68,7 +87,7 @@ const AddViolationModal = ({ isOpen, onClose, onSubmit }) => {
                     </div>
                     <div className="form-group">
                         <label>Approved by</label>
-                        <input type="text" name="approvedBy" value={newViolation.approvedBy} onChange={handleInputChange} required />
+                        <input type="text" name="approvedById" value={newViolation.approvedById} onChange={handleInputChange} required />
                     </div>
                 </div>
                 
