@@ -13,6 +13,7 @@ public interface CsSlipService {
     Optional<CsSlip> getCsSlipById(Long id);
     List<CsSlip> getCsSlipByStudentName(String name);
     List<CsSlip> getCsSlipReportByStudentName(String name);
+    List<CsSlip> getCsSlipReportByStationName(String name);
 
     CsSlip addCsSlip(CsSlip csSlip);
 

@@ -56,6 +56,16 @@ public class CsSlipController {
         }
     }
 
+    @GetMapping("/commServSlip/areaOfCs/{name}")
+    public ResponseEntity<List<CsSlip>> getCsSlipReportByStationName(@PathVariable String name) {
+        List<CsSlip> csSlips = csSlipService.getCsSlipReportByStationName(name);
+        if (!csSlips.isEmpty()) {
+            return new ResponseEntity<>(csSlips, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
     @PutMapping("/updateDeduction/{csSlipId}")
     public ResponseEntity<String> updateDeduction(@PathVariable Long csSlipId, @RequestParam int deduction) {
         try {
