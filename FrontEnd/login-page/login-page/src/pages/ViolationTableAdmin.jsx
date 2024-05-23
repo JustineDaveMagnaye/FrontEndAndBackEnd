@@ -90,19 +90,31 @@ const ViolationPageAdmin = () => {
 
     const handleAddViolation = async (newViolation) => {
         try {
-            const response = await axios.post("http://localhost:8080/Violation/violation/addViolation", newViolation, {
+            const formattedViolation = {
+                dateOfNotice: newViolation.dateOfNotice,
+                student: {
+                    id: parseInt(newViolation.studentId)
+                },
+                offense: {
+                    id: parseInt(newViolation.offenseId)
+                },
+                warningNumber: parseInt(newViolation.warningNumber),
+                csHours: parseInt(newViolation.csHours),
+                disciplinaryAction: newViolation.disciplinaryAction
+            };
+
+            const response = await axios.post("http://localhost:8080/Violation/violation/addViolation", formattedViolation, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 }
             });
-            setMessage(response.data);
+            console.log(response.data);
             closeAddModal();
             loadViolations();
         } catch (error) {
             console.error('Error adding violation:', error);
-            setMessage("Violation cannot be added");
         }
     };
 
@@ -127,6 +139,11 @@ const ViolationPageAdmin = () => {
     const handleLogout = () => {
         localStorage.clear();
         navigate('/login');
+    };
+
+    const formatDate = (dateString) => {
+        const options = { year: 'numeric', month: 'short', day: '2-digit' };
+        return new Date(dateString).toLocaleDateString('en-US', options).toUpperCase();
     };
 
     return (
@@ -188,7 +205,7 @@ const ViolationPageAdmin = () => {
                                 <tr key={violation.id}>
                                     <td>{violation.student ? `${violation.student.lastName}, ${violation.student.firstName} ${violation.student.middleName}` : 'Unknown Student'}</td>
                                     <td>{violation.offense ? violation.offense.description : 'Unknown Offense'}</td>
-                                    <td>{violation.dateOfNotice}</td>
+                                    <td>{formatDate(violation.dateOfNotice)}</td>
                                     <td>{violation.warningNumber}</td>
                                     <td>{violation.disciplinaryAction}</td>
                                     <td>{violation.csHours}</td>
