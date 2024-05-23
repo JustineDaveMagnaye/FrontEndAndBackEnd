@@ -6,105 +6,19 @@ import user from '../assets/user.png';
 
 import { useNavigate } from "react-router-dom";
 
-const CsReportPageAdmin = () => {
-    const [reports, setReports] = useState([]);
-    const [filteredReports, setFilteredReports] = useState([]);
-    const [studentName, setStudentName] = useState('');
-    const [error, setError] = useState('');
-    const navigate = useNavigate();
-    useEffect(() => {
-        loadReports();
-        let exp = localStorage.getItem('exp')
-        let currentDate = new Date();
-        const role = localStorage.getItem('role')
-        if(exp * 1000 < currentDate.getTime()){
-            navigate('/login')
-        }
-        if(role != "ROLE_ROLE_ADMIN"){
-            if(role === "ROLE_ROLE_EMPLOYEE"){
-                navigate('/employee/cs-list');
-            } else if (role === "ROLE_ROLE_STUDENT"){
-                navigate('/student/violation')
-            } else if (role === "ROLE_ROLE_GUEST"){
-                navigate('/guest/violation')
-            } else {
-                navigate('/login')
-            }
-        }
-    }, []);
-
-    const loadReports = async () => {
-        try {
-            const response = await axios.get("http://localhost:8080/CSReport/commServReports", {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                }
-            });
-            setReports(response.data);
-            setFilteredReports(response.data);
-        } catch (error) {
-            console.error('Error fetching community service reports:', error);
-        }
+const CsReportPageAdmin = ({data}) => {
+    const formatDate = (dateString) => {
+        const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+        return new Date(dateString).toLocaleDateString(undefined, options);
     };
 
-    const handleStudentNameChange = async (event) => {
-        const name = event.target.value;
-        setStudentName(name);
-
-        try {
-            if (name.trim() === "") {
-                setFilteredReports(reports);
-                setError('');
-                return;
-            }
-
-            const response = await axios.get(`http://localhost:8080/CSSlip/commServSlipsByName/${name}`, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                }
-            });
-            if (response.data && response.data.length > 0) {
-                let csReports = [];
-                response.data.forEach(csSlip => {
-                    csReports = [...csReports, ...csSlip.reports.map(report => ({
-                        ...report,
-                        studentName: csSlip.studentName
-                    }))];
-                });
-                setFilteredReports(csReports);
-                setError('');
-            } else {
-                setFilteredReports([]);
-                setError('No results found.');
-            }
-        } catch (error) {
-            console.error('Error searching community service reports by student name:', error);
-            setFilteredReports([]);
-        }
+    const formatTime = (timeString) => {
+        const options = { hour: '2-digit', minute: '2-digit' };
+        return new Date(timeString).toLocaleTimeString(undefined, options);
     };
-    const handleLogout = () => {
-        localStorage.setItem('token', '');
-        localStorage.setItem('role', '');
-        localStorage.setItem('exp', '');
-        navigate('/login')
-    };
+
     return (
         <div className="cs-report-page-admin">
-            {/* <nav className="nav-bar">
-                <img src={logo} alt="Logo" className="rc-logo"/>
-                <div className="nav-links">
-                    <a className="nav-link" href="/admin/offense">Offense</a>
-                    <a className="nav-link" href="/admin/violation">Violation</a>
-                    <a className="nav-link" href="/admin/cs-list">CS Slips</a>
-                    <a className="nav-link" href="#" onMouseDown={handleLogout}>Logout</a>
-                    <img src={user} alt="profile" className="profile"/>
-                </div>
-            </nav> */}
-
             <div className="report-container">
                 <h1>COMMUNITY SERVICE REPORT</h1>
                 <div className="content-container">
@@ -115,8 +29,7 @@ const CsReportPageAdmin = () => {
                                 className="input-field" 
                                 name="student-name" 
                                 placeholder="STUDENT NAME"
-                                value={studentName}
-                                onChange={handleStudentNameChange}
+                                value={data.name} disabled
                             />
                         </div>
                         <div className="field-container">
@@ -125,45 +38,46 @@ const CsReportPageAdmin = () => {
                                 className="input-field" 
                                 name="name" 
                                 placeholder="AREA OF COMMUNITY SERVICE"
+                                value={data.area} disabled
                             />
                         </div>
                     </div>
 
-                    {error && (
+                    {/* {error && (
                         <div className="error-message">
                             {error}
                         </div>
-                    )}
+                    )} */}
 
                     <table className="cs-report-table">
                         <thead>
                             <tr>
-                                <th>DATE</th>
-                                <th>TIME STARTED</th>
-                                <th>TIME ENDED</th>
-                                <th>HOURS COMPLETED</th>
-                                <th>NATURE OF WORK</th>
-                                <th>OFFICE</th>
-                                <th>STATUS</th>
-                                <th>SUPERVISING PERSONNEL</th>
+                                <th>Date of CS</th>
+                                <th>Time In</th>
+                                <th>Time Out</th>
+                                <th>Hours Completed</th>
+                                <th>Nature of Work</th>
+                                <th>Office</th>
+                                <th>Status</th>
+                                <th>Remarks</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {filteredReports.map(report => (
+                            {data.reports && data.reports.map(report => (
                                 <tr key={report.id}>
-                                    <td>{report.dateOfCs}</td>
-                                    <td>{report.timeIn}</td>
-                                    <td>{report.timeOut}</td>
+                                    <td>{formatDate(report.dateOfCs)}</td>
+                                    <td>{formatTime(report.timeIn)}</td>
+                                    <td>{formatTime(report.timeOut)}</td>
                                     <td>{report.hoursCompleted}</td>
                                     <td>{report.natureOfWork}</td>
-                                    <td>{report.office}</td>
+                                    <td>{data.area}</td>
                                     <td>{report.status}</td>
-                                    <td>{report.supervisingPersonnel}</td>
+                                    <td>{report.remarks}</td>
                                 </tr>
                             ))}
-                            {filteredReports.length === 0 && (
+                            {data.reports.length === 0 && (
                                 <tr>
-                                    <td colSpan="10">No results found.</td>
+                                    <td colSpan="10">No Student selected.</td>
                                 </tr>
                             )}
                         </tbody>

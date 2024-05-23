@@ -62,6 +62,17 @@ const CsSlipStudent = () => {
         navigate('/login')
     };
 
+    const formatDate = (dateString) => {
+        const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+        return new Date(dateString).toLocaleDateString(undefined, options);
+    };
+
+    const formatTime = (timeString) => {
+        const options = { hour: '2-digit', minute: '2-digit' };
+        return new Date(timeString).toLocaleTimeString(undefined, options);
+    };
+
+
     return (
         <div className="csreport-student">
            <nav className="nav-bar">
@@ -89,7 +100,7 @@ const CsSlipStudent = () => {
                             {csSlips.map(csSlip => (
                                 <tr key={csSlip.id}>
                                     <td>{`${csSlip.student.lastName}, ${csSlip.student.firstName} ${csSlip.student.middleName}`}</td>
-                                    <td>{csSlip.areaOfCommServId}</td>
+                                    <td>{csSlip.areaOfCommServ.stationName}</td>
                                     <td>
                                         <button
                                             className="eye-button"
@@ -123,12 +134,12 @@ const CsSlipStudent = () => {
                             <tbody>
                                 {selectedSlip.reports.map(report => (
                                     <tr key={report.id}>
-                                        <td>{report.dateOfCs}</td>
-                                        <td>{report.timeIn}</td>
-                                        <td>{report.timeOut}</td>
+                                        <td>{formatDate(report.dateOfCs)}</td>
+                                        <td>{formatTime(report.timeIn)}</td>
+                                        <td>{formatTime(report.timeOut)}</td>
                                         <td>{report.hoursCompleted}</td>
                                         <td>{report.natureOfWork}</td>
-                                        <td>{report.areaOfCommServId}</td>
+                                        <td>{selectedSlip.areaOfCommServ.stationName}</td>
                                         <td>{report.status}</td>
                                         <td>{report.employeeNumber}</td>
                                     </tr>

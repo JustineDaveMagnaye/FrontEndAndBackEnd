@@ -22,13 +22,19 @@ public class CsSlip implements Serializable {
     private Student student;
 
     private String reasonOfCs;
+
     @ManyToOne
     private Station areaOfCommServ;
-    @OneToMany
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CsReport> reports;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Violation> violations;
 
     private int deduction;
+
+    public void addReport(CsReport report) {
+        reports.add(report);
+    }
 }

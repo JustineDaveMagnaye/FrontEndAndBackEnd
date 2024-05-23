@@ -1,5 +1,6 @@
 package com.rocs.osd.service.csSlip;
 
+import com.rocs.osd.domain.csReport.CsReport;
 import com.rocs.osd.domain.csSlip.CsSlip;
 import com.rocs.osd.domain.student.Student;
 import com.rocs.osd.domain.violation.Violation;
@@ -17,4 +18,6 @@ public interface CsSlipService {
 
     int getTotalCsHoursByStudent(Long studentId);
     void updateDeduction(Long csSlipId, int deduction);
+
+    CsReport addCsReportToCsSlip(Long csSlipId, CsReport csReport);
 }

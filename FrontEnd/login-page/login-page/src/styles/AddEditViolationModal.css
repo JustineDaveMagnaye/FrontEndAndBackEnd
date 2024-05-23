@@ -6,7 +6,7 @@
     background: white;
     padding: 20px;
     border-radius: 8px;
-    width: 420px;
+    width: 680px;
     height: auto;
     max-width: 80%;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
@@ -18,6 +18,14 @@
     align-content: center;
     padding: 0;
     margin: 0;
+}
+
+.wrap {
+    flex-wrap: wrap;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px
 }
 
 .modal h2 {
@@ -36,7 +44,8 @@
     font-weight: bold;
 }
 
-.form-group input {
+.form-group input,
+.form-group select {
     width: 300px;
     padding: 3px 10px;
     font-size: 14px;
@@ -44,6 +53,18 @@
     background-color: white;
     border: 1px solid #757575;
     height: 35px;
+}
+
+.form-group select {
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="6"><path d="M0 0l6 6 6-6H0z" fill="%23444444"/></svg>');
+    background-repeat: no-repeat;
+    background-position-x: calc(100% - 20px);
+    background-position-y: center;
+    transition: background-color 0.3s;
 }
 
 

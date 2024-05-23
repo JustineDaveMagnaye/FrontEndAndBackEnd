@@ -65,6 +65,10 @@ const ViolationGuest = () => {
             navigate('/login')
         };
 
+        const formatDate = (dateString) => {
+            const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+            return new Date(dateString).toLocaleDateString(undefined, options);
+        };
 
     return (
         <div className="violation-guest">
@@ -110,7 +114,7 @@ const ViolationGuest = () => {
                                 <tr key={violation.id}>
                                     <td>{`${violation.student.lastName}, ${violation.student.firstName} ${violation.student.middleName}`}</td>
                                     <td>{violation.offense.id}</td>
-                                    <td>{violation.dateOfNotice}</td>
+                                    <td>{formatDate(violation.dateOfNotice)}</td>
                                     <td>{violation.warningNumber}</td>
                                     <td>{violation.disciplinaryAction}</td>
                                     <td>{violation.csHours}</td>

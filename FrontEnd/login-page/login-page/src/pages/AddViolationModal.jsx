@@ -30,42 +30,48 @@ const AddViolationModal = ({ isOpen, onClose, onSubmit }) => {
             <button onClick={onClose} className="close-btn">&times;</button>
             <h2>Add Violation</h2>
             <form onSubmit={handleSubmit} className='violation-form-container'>
-                <div className="form-group">
-                    <label>Student ID</label>
-                    <input type="text" name="studentId" value={newViolation.studentId} onChange={handleInputChange} required />
+                <div className='wrap'>
+                    <div className="form-group">
+                        <label>Student ID</label>
+                        <input type="text" name="studentId" value={newViolation.studentId} onChange={handleInputChange} required />
+                    </div>
+                    <div className="form-group">
+                        <label>Student Name</label>
+                        <input type="text" name="studentName" value={newViolation.studentName} onChange={handleInputChange} required />
+                    </div>
+                    <div className="form-group">
+                        <label>Offense Type</label>
+                        <select name="type" value={newViolation.type} onChange={handleInputChange} required>
+                            <option value="Major">Major</option>
+                            <option value="Minor">Minor</option>
+                        </select>
+                    </div>
+                    <div className="form-group">
+                        <label>Offense</label>
+                        <input type="text" name="description" value={newViolation.description} onChange={handleInputChange} required />
+                    </div>
+                    <div className="form-group">
+                        <label>Date of Notice</label>
+                        <input type="date" name="dateOfNotice" value={newViolation.dateOfNotice} onChange={handleInputChange} required />
+                    </div>
+                    <div className="form-group">
+                        <label>Number of Occurrence</label>
+                        <input type="text" name="occurrence" value={newViolation.occurrence} onChange={handleInputChange} required />
+                    </div>
+                    <div className="form-group">
+                        <label>Disciplinary Action</label>
+                        <input type="text" name="disciplinaryAction" value={newViolation.disciplinaryAction} onChange={handleInputChange} required />
+                    </div>
+                    <div className="form-group">
+                        <label>Community Service Hours</label>
+                        <input type="number" name="csHours" value={newViolation.csHours} onChange={handleInputChange} required />
+                    </div>
+                    <div className="form-group">
+                        <label>Approved by</label>
+                        <input type="text" name="approvedBy" value={newViolation.approvedBy} onChange={handleInputChange} required />
+                    </div>
                 </div>
-                <div className="form-group">
-                    <label>Student Name</label>
-                    <input type="text" name="studentName" value={newViolation.studentName} onChange={handleInputChange} required />
-                </div>
-                <div className="form-group">
-                    <label>Offense Type</label>
-                    <input type="text" name="type" placeholder="Major or Minor" value={newViolation.type} onChange={handleInputChange} required />
-                </div>
-                <div className="form-group">
-                    <label>Offense</label>
-                    <input type="text" name="description" value={newViolation.description} onChange={handleInputChange} required />
-                </div>
-                <div className="form-group">
-                    <label>Date of Notice</label>
-                    <input type="date" name="dateOfNotice" value={newViolation.dateOfNotice} onChange={handleInputChange} required />
-                </div>
-                <div className="form-group">
-                    <label>Number of Occurrence</label>
-                    <input type="text" name="occurrence" value={newViolation.occurrence} onChange={handleInputChange} required />
-                </div>
-                <div className="form-group">
-                    <label>Disciplinary Action</label>
-                    <input type="text" name="disciplinaryAction" value={newViolation.disciplinaryAction} onChange={handleInputChange} required />
-                </div>
-                <div className="form-group">
-                    <label>Community Service Hours</label>
-                    <input type="number" name="csHours" value={newViolation.csHours} onChange={handleInputChange} required />
-                </div>
-                <div className="form-group">
-                    <label>Approved by</label>
-                    <input type="text" name="approvedBy" value={newViolation.approvedBy} onChange={handleInputChange} required />
-                </div>
+                
                 <button type="submit" className="submit-btn">Submit</button>
             </form>
         </Modal>

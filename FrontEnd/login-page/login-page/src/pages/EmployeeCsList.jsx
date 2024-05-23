@@ -10,12 +10,14 @@ import EmployeeCsSlip from "./EmployeeCsSlip";
 
 const EmployeeCsList = () => {
     const [csSlip, setCsSlip] = useState({
+        id: "",
         studentNumber: "",
         name: "",
         section: "",
         head: "",
         deduction: "",
         area: "",
+        reason: "",
         reports: []
     });
     
@@ -23,7 +25,6 @@ const EmployeeCsList = () => {
     const navigate = useNavigate();
     useEffect(() => {
         loadCsSlips();
-        loadCsSlipData();
         let exp = localStorage.getItem('exp')
         let currentDate = new Date();
         const role = localStorage.getItem('role')
@@ -59,52 +60,23 @@ const EmployeeCsList = () => {
         }
     };
 
-    const loadCsSlipData = async () => {
-        try {
-                const response = await axios.get(`http://localhost:8080/CSSlip/commServSlip/${csSlips.id}`);
-                const loadedCsSlip = response.data;
-    
-                setCsSlip({
-                    studentNumber: loadedCsSlip.student.studentNumber,
-                    name: `${loadedCsSlip.student.firstName} ${loadedCsSlip.student.lastName}`,
-                    section: loadedCsSlip.student.section.sectionName,
-                    head: loadedCsSlip.student.section.clusterHead,
-                    deduction: loadedCsSlip.deduction,
-                    area: loadedCsSlip.areaOfCommServ.stationName,
-                    reports: loadedCsSlip.reports
-                });
-        
-        } catch (error) {
-            console.error('Error fetching csSlip data:', error);
-        }
-    };
-    
-    // useEffect(() => {
-    //     loadCsSlipData();
-    // }, [loadCsSlipData]);
-
-    // useEffect(() => {
-    //     console.log(csSlip);
-    // }, [csSlip]);
-
     const handleRowClick = (csSlip) => {
-
         setCsSlip({
+            id: csSlip.id,
             studentNumber: csSlip.student.studentNumber,
             name: `${csSlip.student.firstName} ${csSlip.student.lastName}`,
             section: csSlip.student.section.sectionName,
             head: csSlip.student.section.clusterHead,
             deduction: csSlip.deduction,
             area: csSlip.areaOfCommServ.stationName,
+            reason: csSlip.reasonOfCs,
             reports: csSlip.reports
         });
     };
 
     const handleLogout = () => {
-        localStorage.setItem('token', '');
-        localStorage.setItem('role', '');
-        localStorage.setItem('exp', '');
-        navigate('/login')
+        localStorage.clear();
+        navigate('/login');
     };
 
     return (
@@ -119,7 +91,7 @@ const EmployeeCsList = () => {
                     </div>
                 </nav>
             <div className="employee-container">
-                <h1>Community Service Reports</h1>
+                <h1>Community Service Slips</h1>
                 <div className="content-container">
                     <table className="csList-table">
                         <thead>
