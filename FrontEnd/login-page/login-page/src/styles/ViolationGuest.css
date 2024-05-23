@@ -122,8 +122,8 @@ input:focus{
     outline: none;
 }
 
-.beneficiary-button {
-    width: 150px;
+.studentFilter {
+    width: 250px;
     padding: 3px 10px;
     font-size: 14px;
     border-radius: 5px;

@@ -7,6 +7,18 @@ import user from '../assets/user.png';
 import CommunityServiceReport from "./CommunityServiceReport";
 
 const CsListPageAdmin = () => {
+    const [csReport, setCsReport] = useState({
+        id: "",
+        studentNumber: "",
+        name: "",
+        section: "",
+        head: "",
+        deduction: "",
+        area: "",
+        reason: "",
+        reports: []
+    });
+
     const [csSlips, setCsSlips] = useState([]); // hook pang store lahat ng data sa community service slips
     const [filteredCsSlips, setFilteredCsSlips] = useState([]); // hook pang store sa filtered slips
     const [searchInput, setSearchInput] = useState(''); // hook pang store sa search input
@@ -71,6 +83,21 @@ const CsListPageAdmin = () => {
         localStorage.setItem('exp', '');
         navigate('/login')
     };
+
+    const handleRowClick = (csSlip) => {
+        setCsReport({
+            id: csSlip.id,
+            studentNumber: csSlip.student.studentNumber,
+            name: `${csSlip.student.firstName} ${csSlip.student.lastName}`,
+            section: csSlip.student.section.sectionName,
+            head: csSlip.student.section.clusterHead,
+            deduction: csSlip.deduction,
+            area: csSlip.areaOfCommServ.stationName,
+            reason: csSlip.reasonOfCs,
+            reports: csSlip.reports
+        });
+    };
+
     return (
         <div className="list-cs-page-admin">
             <nav className="nav-bar">
@@ -104,11 +131,20 @@ const CsListPageAdmin = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {csSlipsToDisplay.map(csSlip => (
-                                <tr key={csSlip.id}>
-                                    <td>{csSlip.student.studentNumber}</td>
-                                    <td>{`${csSlip.student.firstName} ${csSlip.student.lastName}`}</td>
-                                    <td>{csSlip.areaOfCommServ.stationName}</td>
+                            {csSlipsToDisplay.map((csSlip, index) => (
+                                <tr key={index} onClick={() => handleRowClick(csSlip)}>
+                                    <td>
+                                        
+                                            {csSlip.student.studentNumber}
+                                        
+                                    </td>
+                                    <td>
+                                            {`${csSlip.student.firstName} ${csSlip.student.lastName}`}
+                                        
+                                    </td>
+                                    <td>
+                                            {csSlip.areaOfCommServ.stationName}
+                                    </td>
                                 </tr>
                             ))}
                             {csSlipsToDisplay.length === 0 && (
@@ -122,7 +158,9 @@ const CsListPageAdmin = () => {
             </div>
 
             <div>
-                <CommunityServiceReport/>
+                <CommunityServiceReport
+                     data = {csReport}
+                />
             </div>
         </div>
     );
