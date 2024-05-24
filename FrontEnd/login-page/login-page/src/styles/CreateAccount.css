@@ -146,12 +146,12 @@ form button {
     cursor: pointer;
 }
 
-.button-disabled {
+button.button-disabled1 {
     background-color: #d3d3d3; 
     cursor: not-allowed; 
 }
 
-.button-enabled {
+button.button-enabled1 {
     background-color: #007bff; 
     cursor: pointer; 
     color: white; 
