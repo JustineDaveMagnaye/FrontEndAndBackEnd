@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import '../styles/ListCommunityServiceReport.css';
 import { useNavigate } from "react-router-dom";
@@ -23,33 +23,43 @@ const CsListPageAdmin = () => {
     const [filteredCsSlips, setFilteredCsSlips] = useState([]);
     const [searchInput, setSearchInput] = useState('');
     const [isCollapsibleOpen, setIsCollapsibleOpen] = useState(false);
+    const [collapsibleHeight, setCollapsibleHeight] = useState("0px");
 
     const navigate = useNavigate();
+    const collapsibleRef = useRef(null);
 
     useEffect(() => {
         loadCsSlips();
-        let exp = localStorage.getItem('exp')
+        let exp = localStorage.getItem('exp');
         let currentDate = new Date();
-        if(exp * 1000 < currentDate.getTime()){
-            navigate('/login')
+        if (exp * 1000 < currentDate.getTime()) {
+            navigate('/login');
         }
-        const role = localStorage.getItem('role')
-        if(role != "ROLE_ROLE_ADMIN"){
-            if(role === "ROLE_ROLE_EMPLOYEE"){
+        const role = localStorage.getItem('role');
+        if (role !== "ROLE_ROLE_ADMIN") {
+            if (role === "ROLE_ROLE_EMPLOYEE") {
                 navigate('/employee/cs-list');
-            } else if (role === "ROLE_ROLE_STUDENT"){
-                navigate('/student/violation')
-            } else if (role === "ROLE_ROLE_GUEST"){
-                navigate('/guest/violation')
+            } else if (role === "ROLE_ROLE_STUDENT") {
+                navigate('/student/violation');
+            } else if (role === "ROLE_ROLE_GUEST") {
+                navigate('/guest/violation');
             } else {
-                navigate('/login')
+                navigate('/login');
             }
         }
-    }, []);
+    }, [navigate]);
 
     useEffect(() => {
         filterCsSlips();
     }, [searchInput, csSlips]);
+
+    useEffect(() => {
+        if (isCollapsibleOpen) {
+            setCollapsibleHeight(`${collapsibleRef.current.scrollHeight}px`);
+        } else {
+            setCollapsibleHeight("0px");
+        }
+    }, [isCollapsibleOpen]);
 
     const loadCsSlips = async () => {
         try {
@@ -76,7 +86,7 @@ const CsListPageAdmin = () => {
             return studentName.includes(searchInput.toLowerCase());
         });
         setFilteredCsSlips(filtered);
-    };  
+    };
 
     const csSlipsToDisplay = searchInput ? filteredCsSlips : csSlips;
 
@@ -84,7 +94,7 @@ const CsListPageAdmin = () => {
         localStorage.setItem('token', '');
         localStorage.setItem('role', '');
         localStorage.setItem('exp', '');
-        navigate('/login')
+        navigate('/login');
     };
 
     const handleRowClick = (csSlip) => {
@@ -119,7 +129,7 @@ const CsListPageAdmin = () => {
                 </div>
             </nav>
             <div className="list-cs-container">
-                <h1>List of Community Service Reports</h1>
+                <h1>List of Community Service Slips</h1>
                 <div className="content-container">
                     <div className="list-cs-search-filter">
                         <input
@@ -140,11 +150,27 @@ const CsListPageAdmin = () => {
                         </thead>
                         <tbody>
                             {csSlipsToDisplay.map((csSlip, index) => (
-                                <tr key={index} onClick={() => handleRowClick(csSlip)}>
-                                    <td>{csSlip.student.studentNumber}</td>
-                                    <td>{`${csSlip.student.firstName} ${csSlip.student.lastName}`}</td>
-                                    <td>{csSlip.areaOfCommServ.stationName}</td>
-                                </tr>
+                                <React.Fragment key={index}>
+                                    <tr onClick={() => handleRowClick(csSlip)}>
+                                        <td>{csSlip.student.studentNumber}</td>
+                                        <td>{`${csSlip.student.firstName} ${csSlip.student.lastName}`}</td>
+                                        <td>{csSlip.areaOfCommServ.stationName}</td>
+                                    </tr>
+                                    {csReport.id === csSlip.id && (
+                                        <tr
+                                            ref={collapsibleRef}
+                                            style={{ maxHeight: `${collapsibleHeight}` }}
+                                            className={`collapsible-section ${isCollapsibleOpen ? 'open' : ''}`}
+                                        >
+                                            <td colSpan="3">
+                                                <CommunityServiceReport
+                                                    data={csReport}
+                                                    isOpen={isCollapsibleOpen}
+                                                />
+                                            </td>
+                                        </tr>
+                                    )}
+                                </React.Fragment>
                             ))}
                             {csSlipsToDisplay.length === 0 && (
                                 <tr>
@@ -154,13 +180,6 @@ const CsListPageAdmin = () => {
                         </tbody>
                     </table>
                 </div>
-            </div>
-
-            <div>
-                <CommunityServiceReport
-                     data = {csReport}
-                    isOpen={isCollapsibleOpen}
-                />
             </div>
         </div>
     );

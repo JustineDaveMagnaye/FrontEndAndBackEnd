@@ -131,9 +131,6 @@ const CsSlipGuest = () => {
                 <h1>MY LIST OF COMMUNITY SERVICE SLIP</h1>
                 <div className="content-container">
                     <div className="date-filter">
-                        <input type="date" className="date-input" id="start-date" name="start-date" />
-                        <p id="to">to</p>
-                        <input type="date" className="date-input" id="end-date" name="end-date" />
                         <select className="beneficiary-button" onChange={handleStudentChange} value={selectedStudentNumber}>
                             <option value="">All Students</option>
                             {students.map(studentNumber => {
@@ -182,7 +179,8 @@ const CsSlipGuest = () => {
                                                             </thead>
                                                             <tbody>
                                                                 {selectedSlip.reports.map(report => (
-                                                                    <tr key={report.id}>                                                                    <td>{formatDate(report.dateOfCs)}</td>
+                                                                    <tr key={report.id}>        
+                                                                        <td>{formatDate(report.dateOfCs)}</td>
                                                                         <td>{formatTime(report.timeIn)}</td>
                                                                         <td>{formatTime(report.timeOut)}</td>
                                                                         <td>{report.hoursCompleted}</td>

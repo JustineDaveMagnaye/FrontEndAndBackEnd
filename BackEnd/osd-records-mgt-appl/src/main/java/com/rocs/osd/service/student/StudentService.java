@@ -8,4 +8,6 @@ import java.util.Optional;
 public interface StudentService {
     List<Student> getAllStudent();
     Optional<Student> getStudentById(Long id);
+
+    Student getStudentByNumber(String studentNumber);
 }

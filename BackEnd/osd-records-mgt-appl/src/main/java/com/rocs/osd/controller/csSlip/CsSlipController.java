@@ -30,6 +30,11 @@ public class CsSlipController {
         return new ResponseEntity<>(this.csSlipService.getCsSlipById(id), HttpStatus.OK);
     }
 
+    @GetMapping("/commServSlip/studentNumber/{studentNumber}")
+    public ResponseEntity<List<CsSlip>> getCsSlipByStudentNumber(@PathVariable String studentNumber) {
+        return new ResponseEntity<>(this.csSlipService.getCsSlipByStudentNumber(studentNumber), HttpStatus.OK);
+    }
+
     @GetMapping("/totalCsHours/{studentId}")
     public ResponseEntity<Integer> getTotalCsHoursByStudent(@PathVariable Long studentId) {
         int totalCsHours = csSlipService.getTotalCsHoursByStudent(studentId);

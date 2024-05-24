@@ -8,13 +8,18 @@ import Collapsible from 'react-collapsible';
 
 const CsSlipStudent = () => {
     const [csSlips, setCsSlips] = useState([]);
+    const [userId, setUserId] = useState('');
+
     const [selectedSlip, setSelectedSlip] = useState(null);
     const [totalHoursRequired, setTotalHoursRequired] = useState(0);
     const [totalHoursCompleted, setTotalHoursCompleted] = useState(0);
     const navigate = useNavigate();
 
     useEffect(() => {
-        loadCsSlips();
+        const id = localStorage.getItem('userId');
+        setUserId(id);
+        loadCsSlips(id);
+
         fetchTotalHoursRequired("studentId"); 
         let exp = localStorage.getItem('exp');
         let currentDate = new Date();
@@ -35,9 +40,9 @@ const CsSlipStudent = () => {
         }
     }, []);
 
-    const loadCsSlips = async () => {
+    const loadCsSlips = async (userId) => {
         try {
-            const response = await axios.get("http://localhost:8080/CSSlip/commServSlips", {
+            const response = await axios.get(`http://localhost:8080/CSSlip/commServSlip/studentNumber/${userId}`, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
@@ -151,7 +156,7 @@ const CsSlipStudent = () => {
                                             <td colSpan="2">
                                                 <Collapsible open={true}>
                                                     <div>
-                                                        <h2>COMMUNITY SERVICE REPORT</h2>
+                                                        <h2>Community Service Report</h2>
                                                         <table className="student-cs-report-table">
                                                             <thead>
                                                                 <tr>
