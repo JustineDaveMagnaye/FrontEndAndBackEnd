@@ -11,4 +11,6 @@ public interface CsSlipRepository extends JpaRepository<CsSlip, Long> {
     List<CsSlip> findByAreaOfCommServ_StationNameIgnoreCase(String name);
     List<CsSlip> findByStudentStudentNumber(String studentStudentNumber);
 
+    List<CsSlip> findByStudent_Id(Long id);
+
 }

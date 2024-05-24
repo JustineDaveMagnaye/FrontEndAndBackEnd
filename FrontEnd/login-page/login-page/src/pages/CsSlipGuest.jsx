@@ -14,9 +14,84 @@ const CsSlipGuest = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        loadCsSlips();
-        let exp = localStorage.getItem('exp');
-        let currentDate = new Date();
+        const loadGuest = async () => {
+            try {
+                const guestNumber = localStorage.getItem('userId');
+                const response = await axios.get(`http://localhost:8080/Guest/getGuestByGuestNumber/${guestNumber}`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    }
+                });
+                loadBeneficiaries(response.data.id);
+            } catch (error) {
+                handleLoadError(error);
+            }
+        }
+
+        const handleLoadError = (error) => {
+            console.error('Error fetching guest:', error);
+            // You can add error handling logic here (e.g., show a message to the user)
+        }
+
+        const loadBeneficiaries = async (guestId) => {
+            try {
+                const response = await axios.get(`http://localhost:8080/Guest/guests/${guestId}/get-beneficiaries`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    }
+                });
+                const beneficiaries = response.data.flatMap(guest => guest.beneficiary);
+                const studentIds = beneficiaries.map(beneficiary => beneficiary.id);
+                loadCsSlips(studentIds);
+            } catch (error) {
+                handleLoadError(error);
+            }
+        };
+
+        const loadCsSlips = async (studentIds) => {
+            try {
+                const responses = await Promise.all(studentIds.map(studentId =>
+                    axios.get(`http://localhost:8080/CSSlip/commServSlip/studentId/${studentId}`, {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                        }
+                    })
+                ));
+
+                const csSlipsByStudent = new Map();
+                responses.forEach(response => {
+                    response.data.forEach(csSlip => {
+                        const studentId = csSlip.student.id;
+                        if (!csSlipsByStudent.has(studentId)) {
+                            csSlipsByStudent.set(studentId, {
+                                ...csSlip,
+                                reports: [],
+                            });
+                        }
+                        csSlipsByStudent.get(studentId).reports.push(...csSlip.reports);
+                    });
+                });
+
+                const updatedCsSlips = Array.from(csSlipsByStudent.values());
+                setCsSlips(updatedCsSlips);
+
+                const uniqueStudentNumbers = Array.from(new Set(updatedCsSlips.map(csSlip => csSlip.student.studentNumber)));
+                setStudents(uniqueStudentNumbers);
+            } catch (error) {
+                handleLoadError(error);
+            }
+        };
+
+        loadGuest();
+
+        const exp = localStorage.getItem('exp');
+        const currentDate = new Date();
         const role = localStorage.getItem('role');
         if (exp * 1000 < currentDate.getTime()) {
             navigate('/login');
@@ -32,52 +107,10 @@ const CsSlipGuest = () => {
                 navigate('/login');
             }
         }
-    }, []);
-
-    const loadCsSlips = async () => {
-        try {
-            const response = await axios.get("http://localhost:8080/CSSlip/commServSlips", {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                }
-            });
-
-            // Create a map to store csSlips by studentId
-            const csSlipsByStudent = new Map();
-
-            // Group community service slips by studentId
-            response.data.forEach(csSlip => {
-                const studentId = csSlip.student.id;
-                if (!csSlipsByStudent.has(studentId)) {
-                    csSlipsByStudent.set(studentId, {
-                        ...csSlip,
-                        reports: [],
-                    });
-                }
-                csSlipsByStudent.get(studentId).reports.push(...csSlip.reports);
-            });
-
-            // Convert the map values back to an array
-            const updatedCsSlips = Array.from(csSlipsByStudent.values());
-
-            setCsSlips(updatedCsSlips);
-
-            // Extract unique student numbers
-            const uniqueStudentNumbers = Array.from(new Set(response.data.map(csSlip => csSlip.student.studentNumber)));
-            setStudents(uniqueStudentNumbers);
-        } catch (error) {
-            console.error('Error fetching community service slips:', error);
-        }
-    };
+    }, [navigate]);
 
     const handleRowClick = (csSlip) => {
-        if (selectedSlip && selectedSlip.id === csSlip.id) {
-            setSelectedSlip(null);
-        } else {
-            setSelectedSlip(csSlip);
-        }
+        setSelectedSlip(selectedSlip => (selectedSlip && selectedSlip.id === csSlip.id) ? null : csSlip);
     };
 
     const handleStudentChange = (event) => {
