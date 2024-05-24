@@ -32,4 +32,9 @@ public class StudentController {
     public ResponseEntity<Optional<Student>> getStudentById(@PathVariable Long id) {
         return new ResponseEntity<>(this.studentService.getStudentById(id), HttpStatus.OK);
     }
+
+    @GetMapping("/studentNumber/{studentNumber}")
+    public ResponseEntity<Student> getStudentByNumber(@PathVariable String studentNumber) {
+        return new ResponseEntity<>(this.studentService.getStudentByNumber(studentNumber), HttpStatus.OK);
+    }
 }

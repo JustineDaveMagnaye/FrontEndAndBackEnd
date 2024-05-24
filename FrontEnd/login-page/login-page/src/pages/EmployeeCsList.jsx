@@ -9,9 +9,13 @@ import '../styles/EmployeeCsSlip.css';
 import EmployeeCsSlip from "./EmployeeCsSlip";
 
 const EmployeeCsList = () => {
+    const [userId, setUserId] = useState('');
+    const [employee, setEmployee] = useState('');
+
     const [csSlip, setCsSlip] = useState({
         id: "",
         studentNumber: "",
+        studentId: "",
         name: "",
         section: "",
         head: "",
@@ -23,8 +27,13 @@ const EmployeeCsList = () => {
     
     const [csSlips, setCsSlips] = useState([]);
     const navigate = useNavigate();
+
     useEffect(() => {
-        loadCsSlips();
+        const id = localStorage.getItem('userId');
+        setUserId(id);
+        console.log(id);
+
+        loadUser(id);
         let exp = localStorage.getItem('exp')
         let currentDate = new Date();
         const role = localStorage.getItem('role')
@@ -44,10 +53,29 @@ const EmployeeCsList = () => {
         }
     }, []);
 
-
-    const loadCsSlips = async () => {
+    const loadUser = async (userId) => {
         try {
-            const response = await axios.get("http://localhost:8080/CSSlip/commServSlips", {
+            const response = await axios.get(`http://localhost:8080/Employee/employee/${userId}`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                }
+            });
+            setEmployee(response.data);
+            console.log(response.data);
+        } catch (error) {
+            console.error('Error fetching community service slips:', error);
+        }
+    };
+
+    useEffect(() => {
+        loadCsSlips(employee);
+    }, [employee]);
+
+    const loadCsSlips = async (employee) => {
+        try {
+            const response = await axios.get(`http://localhost:8080/CSSlip/commServSlip/areaOfCs/${employee.station.stationName}`, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
@@ -64,6 +92,7 @@ const EmployeeCsList = () => {
         setCsSlip({
             id: csSlip.id,
             studentNumber: csSlip.student.studentNumber,
+            studentId: csSlip.student.id,
             name: `${csSlip.student.firstName} ${csSlip.student.lastName}`,
             section: csSlip.student.section.sectionName,
             head: csSlip.student.section.clusterHead,

@@ -76,6 +76,11 @@ public class CsSlipServiceImpl implements CsSlipService {
     }
 
     @Override
+    public List<CsSlip> getCsSlipByStudentNumber(String studentNumber) {
+        return csSlipRepository.findByStudentStudentNumber(studentNumber);
+    }
+
+    @Override
     public List<CsSlip> getCsSlipReportByStudentName(String name) {
         List<CsSlip> csSlips = csSlipRepository.findByStudent_FirstNameContainingOrStudent_MiddleNameContainingOrStudent_LastNameContaining(name, name, name);
 
