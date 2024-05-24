@@ -74,7 +74,7 @@ const AddCsReportModal = ({ isOpen, onClose, onSubmit, csSlipId }) => {
     };
 
     return (
-        <Modal isOpen={isOpen} onRequestClose={onClose} className="modal" overlayClassName="modal-overlay">
+        <Modal isOpen={isOpen} onRequestClose={onClose} className="modal-box" overlayClassName="modal-overlay">
             <button onClick={onClose} className="close-btn">&times;</button>
             <h2>Add CS Report</h2>
             <form onSubmit={handleSubmit} className='add-form-container'>

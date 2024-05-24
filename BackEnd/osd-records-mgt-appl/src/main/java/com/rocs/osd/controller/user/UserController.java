@@ -72,13 +72,14 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody User user) {
+    public ResponseEntity<User> login(@RequestBody User user) {
         authenticate(user.getUsername(), user.getPassword());
         User loginUser = userService.findUserByUsername(user.getUsername());
         UserPrincipal userPrincipal = new UserPrincipal(loginUser);
         HttpHeaders jwtHeaders = getJwtHeader(userPrincipal);
-        return new ResponseEntity<>("Login success...", jwtHeaders, HttpStatus.OK);
+        return new ResponseEntity<>(loginUser, jwtHeaders, HttpStatus.OK);
     }
+
     @GetMapping("/list")
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> users = userService.getUsers();

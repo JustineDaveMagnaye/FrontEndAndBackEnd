@@ -22,7 +22,6 @@ public class Violation implements Serializable {
     @ManyToOne
     private Student student;
 
-
     @ManyToOne
     private Offense offense;
 

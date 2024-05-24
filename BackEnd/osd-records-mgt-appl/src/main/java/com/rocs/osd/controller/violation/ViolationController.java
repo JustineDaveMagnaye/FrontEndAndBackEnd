@@ -37,6 +37,11 @@ public class ViolationController {
         return new ResponseEntity<>(this.violationService.getAllViolationByStudentId(studentId), HttpStatus.OK);
     }
 
+    @GetMapping("/violation/student/studentNumber/{studentNumber}")
+    public ResponseEntity<List<Violation>> getAllViolationByStudentNumber(@PathVariable String studentNumber) {
+        return new ResponseEntity<>(this.violationService.getAllViolationByStudentNumber(studentNumber), HttpStatus.OK);
+    }
+
     @GetMapping("/violation/student/name/{name}")
     public ResponseEntity<List<Violation>> getAllViolationByStudentName(@PathVariable String name) {
         return new ResponseEntity<>(violationService.getAllViolationByStudentName(name), HttpStatus.OK);

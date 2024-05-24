@@ -39,6 +39,8 @@ const Login = () => {
                     if(authorities[1] === "ROLE_ROLE_STUDENT"){
                         localStorage.setItem('role', authorities[1])
                         navigate('/student/violation');
+                        console.log(response.data.userId);
+                        localStorage.setItem('userId', response.data.userId);
                     } else if (authorities[2] === "ROLE_ROLE_EMPLOYEE"){
                         localStorage.setItem('role', authorities[2])
                         navigate('/employee/cs-list');

@@ -35,6 +35,11 @@ public class ViolationServiceImpl implements ViolationService {
     }
 
     @Override
+    public List<Violation> getAllViolationByStudentNumber(String studentNumber) {
+        return violationRepository.findByStudentStudentNumber(studentNumber);
+    }
+
+    @Override
     public List<Violation> getViolationsByDateRange(Date startDate, Date endDate) {
         return violationRepository.findByDateOfNoticeBetween(startDate, endDate);
     }

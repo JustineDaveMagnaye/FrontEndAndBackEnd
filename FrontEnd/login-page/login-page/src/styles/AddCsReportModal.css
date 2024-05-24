@@ -1,4 +1,4 @@
-.modal {
+.modal-box {
     position: fixed;
     top: 50%;
     left: 50%;
@@ -27,7 +27,7 @@ div .add-form-container {
     margin: 0;
 }
 
-.modal h2 {
+.modal-box h2 {
     display: block;
     margin-bottom: 20px;
     text-align: center;

@@ -2,37 +2,37 @@ import React, { useState, useEffect } from 'react';
 import axios from "axios";
 import '../styles/CsSlipGuest.css';
 import logo from '../assets/logo_new.png';
-import view from '../assets/eye.png';
 import user from '../assets/user.png';
-
 import { useNavigate } from "react-router-dom";
+import Collapsible from 'react-collapsible';
+
 const CsSlipGuest = () => {
     const [csSlips, setCsSlips] = useState([]);
     const [students, setStudents] = useState([]);
     const [selectedSlip, setSelectedSlip] = useState(null);
     const [selectedStudentNumber, setSelectedStudentNumber] = useState('');
     const navigate = useNavigate();
+
     useEffect(() => {
         loadCsSlips();
-        let exp = localStorage.getItem('exp')
+        let exp = localStorage.getItem('exp');
         let currentDate = new Date();
-        const role = localStorage.getItem('role')
-        if(exp * 1000 < currentDate.getTime()){
-            navigate('/login')
+        const role = localStorage.getItem('role');
+        if (exp * 1000 < currentDate.getTime()) {
+            navigate('/login');
         }
-        if(role != "ROLE_ROLE_GUEST"){
-            if(role === "ROLE_ROLE_EMPLOYEE"){
+        if (role !== "ROLE_ROLE_GUEST") {
+            if (role === "ROLE_ROLE_EMPLOYEE") {
                 navigate('/employee/cs-list');
-            } else if (role === "ROLE_ROLE_STUDENT"){
-                navigate('/student/violation')
-            } else if (role === "ROLE_ROLE_ADMIN"){
-                navigate('/admin/offense')
+            } else if (role === "ROLE_ROLE_STUDENT") {
+                navigate('/student/violation');
+            } else if (role === "ROLE_ROLE_ADMIN") {
+                navigate('/admin/offense');
             } else {
-                navigate('/login')
+                navigate('/login');
             }
         }
     }, []);
-
 
     const loadCsSlips = async () => {
         try {
@@ -43,8 +43,28 @@ const CsSlipGuest = () => {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 }
             });
-            setCsSlips(response.data);
 
+            // Create a map to store csSlips by studentId
+            const csSlipsByStudent = new Map();
+
+            // Group community service slips by studentId
+            response.data.forEach(csSlip => {
+                const studentId = csSlip.student.id;
+                if (!csSlipsByStudent.has(studentId)) {
+                    csSlipsByStudent.set(studentId, {
+                        ...csSlip,
+                        reports: [],
+                    });
+                }
+                csSlipsByStudent.get(studentId).reports.push(...csSlip.reports);
+            });
+
+            // Convert the map values back to an array
+            const updatedCsSlips = Array.from(csSlipsByStudent.values());
+
+            setCsSlips(updatedCsSlips);
+
+            // Extract unique student numbers
             const uniqueStudentNumbers = Array.from(new Set(response.data.map(csSlip => csSlip.student.studentNumber)));
             setStudents(uniqueStudentNumbers);
         } catch (error) {
@@ -52,7 +72,7 @@ const CsSlipGuest = () => {
         }
     };
 
-    const handleViewClick = (csSlip) => {
+    const handleRowClick = (csSlip) => {
         if (selectedSlip && selectedSlip.id === csSlip.id) {
             setSelectedSlip(null);
         } else {
@@ -64,35 +84,46 @@ const CsSlipGuest = () => {
         setSelectedStudentNumber(event.target.value);
     };
 
+    const handleLogout = () => {
+        localStorage.setItem('token', '');
+        localStorage.setItem('role', '');
+        localStorage.setItem('exp', '');
+        navigate('/login');
+    };
+
+    const formatDate = (dateString) => {
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        return new Date(dateString).toLocaleDateString(undefined, options);
+    };
+
+    const formatTime = (timeString) => {
+        const options = { hour: '2-digit', minute: '2-digit' };
+        return new Date(timeString).toLocaleTimeString(undefined, options);
+    };
+
+    const calculateTotalHoursCompleted = () => {
+        let totalHours = 0;
+        if (selectedSlip) {
+            selectedSlip.reports.forEach(report => {
+                totalHours += report.hoursCompleted;
+            });
+        }
+        return totalHours;
+    };
+
     const filteredCsSlips = selectedStudentNumber
         ? csSlips.filter(csSlip => csSlip.student.studentNumber === selectedStudentNumber)
         : csSlips;
-        const handleLogout = () => {
-            localStorage.setItem('token', '');
-            localStorage.setItem('role', '');
-            localStorage.setItem('exp', '');
-            navigate('/login')
-        };
-
-        const formatDate = (dateString) => {
-            const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
-            return new Date(dateString).toLocaleDateString(undefined, options);
-        };
-    
-        const formatTime = (timeString) => {
-            const options = { hour: '2-digit', minute: '2-digit' };
-            return new Date(timeString).toLocaleTimeString(undefined, options);
-        };
 
     return (
         <div className="csreport-guest">
             <nav className="nav-bar">
-                <img src={logo} alt="Logo" className="rc-logo"/>
+                <img src={logo} alt="Logo" className="rc-logo" />
                 <div className="nav-links">
                     <a href="/guest/violation">Violation</a>
                     <a href="/guest/cs-slip">CS Slips</a>
                     <a href="#" onMouseDown={handleLogout}>Logout</a>
-                    <img src={user} alt="profile" className="profile"/>
+                    <img src={user} alt="profile" className="profile" />
                 </div>
             </nav>
 
@@ -121,61 +152,63 @@ const CsSlipGuest = () => {
                             <tr>
                                 <th>STUDENT NAME</th>
                                 <th>AREA OF COMMUNITY SERVICE</th>
-                                <th>ACTION</th>
                             </tr>
                         </thead>
                         <tbody>
                             {filteredCsSlips.map(csSlip => (
-                                <tr key={csSlip.id}>
-                                    <td>{`${csSlip.student.lastName}, ${csSlip.student.firstName} ${csSlip.student.middleName}`}</td>
-                                    <td>{csSlip.areaOfCommServ.stationName}</td>
-                                    <td>
-                                        <button
-                                            className="view-button"
-                                            onClick={() => handleViewClick(csSlip)}
-                                        >
-                                            <img src={view} alt="view" className="view-icon"/>
-                                        </button>
-                                    </td>
-                                </tr>
+                                <React.Fragment key={csSlip.id}>
+                                    <tr onClick={() => handleRowClick(csSlip)}>
+                                        <td>{`${csSlip.student.lastName}, ${csSlip.student.firstName} ${csSlip.student.middleName}`}</td>
+                                        <td>{csSlip.areaOfCommServ.stationName}</td>
+                                    </tr>
+                                    {selectedSlip && selectedSlip.id === csSlip.id && (
+                                        <tr>
+                                            <td colSpan="2">
+                                                <Collapsible open={true}>
+                                                    <div>
+                                                        <h2>COMMUNITY SERVICE REPORT</h2>
+                                                        <table className="guest-cs-report-table">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>DATE</th>
+                                                                    <th>TIME STARTED</th>
+                                                                    <th>TIME ENDED</th>
+                                                                    <th>HOURS COMPLETED</th>
+                                                                    <th>NATURE OF WORK</th>
+                                                                    <th>OFFICE</th>
+                                                                    <th>STATUS</th>
+                                                                    <th>SUPERVISING PERSONNEL</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                {selectedSlip.reports.map(report => (
+                                                                    <tr key={report.id}>                                                                    <td>{formatDate(report.dateOfCs)}</td>
+                                                                        <td>{formatTime(report.timeIn)}</td>
+                                                                        <td>{formatTime(report.timeOut)}</td>
+                                                                        <td>{report.hoursCompleted}</td>
+                                                                        <td>{report.natureOfWork}</td>
+                                                                        <td>{selectedSlip.areaOfCommServ.stationName}</td>
+                                                                        <td>{report.status}</td>
+                                                                        <td>{report.employeeNumber}</td>
+                                                                    </tr>
+                                                                ))}
+                                                                <tr>
+                                                                    <td colSpan="8">
+                                                                        <h3>Total Hours of Community Service Completed: {calculateTotalHoursCompleted()}</h3>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </Collapsible>
+                                            </td>
+                                        </tr>
+                                    )}
+                                </React.Fragment>
                             ))}
                         </tbody>
                     </table>
                 </div>
-
-                {selectedSlip && (
-                    <div className="table2-container">
-                        <h2>COMMUNITY SERVICE REPORT</h2>
-                        <table className="guest-cs-report-table">
-                            <thead>
-                                <tr>
-                                    <th>DATE</th>
-                                    <th>TIME STARTED</th>
-                                    <th>TIME ENDED</th>
-                                    <th>HOURS COMPLETED</th>
-                                    <th>NATURE OF WORK</th>
-                                    <th>OFFICE</th>
-                                    <th>STATUS</th>
-                                    <th>SUPERVISING PERSONNEL</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {selectedSlip.reports.map(report => (
-                                    <tr key={report.id}>
-                                        <td>{formatDate(report.dateOfCs)}</td>
-                                        <td>{formatTime(report.timeIn)}</td>
-                                        <td>{formatTime(report.timeOut)}</td>
-                                        <td>{report.hoursCompleted}</td>
-                                        <td>{report.natureOfWork}</td>
-                                        <td>{selectedSlip.areaOfCommServ.stationName}</td>
-                                        <td>{report.status}</td>
-                                        <td>{report.employeeNumber}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
             </div>
         </div>
     );

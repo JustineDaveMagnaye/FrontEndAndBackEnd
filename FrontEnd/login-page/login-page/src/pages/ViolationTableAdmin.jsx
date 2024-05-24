@@ -17,9 +17,8 @@ const ViolationPageAdmin = () => {
     const [searchInput, setSearchInput] = useState('');
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-    const [message, setMessage] = useState("");
     const [violationToEdit, setViolationToEdit] = useState(null);
-
+    const [message, setMessage] = useState("");
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -63,15 +62,40 @@ const ViolationPageAdmin = () => {
         }
     };
 
+    const handleDateChange = (event, setDate) => {
+        const date = new Date(event.target.value);
+        const currentYear = new Date().getFullYear();
+        if (date.getFullYear() > currentYear) {
+            alert('Date exceeds the current year');
+        } else {
+            setDate(event.target.value);
+        }
+    };
+    
+    const handleStartDateChange = (event) => {
+        handleDateChange(event, setStartDate);
+    };
+
+    const handleEndDateChange = (event) => {
+        handleDateChange(event, setEndDate);
+    };
+
     const filterViolations = () => {
-        const filtered = violations.filter(violation => {
-            const matchDate = (!startDate || !endDate) ||
-                (violation.dateOfNotice >= startDate && violation.dateOfNotice <= endDate);
-            const matchSearch = !searchInput || (violation.student && `${violation.student.firstName} ${violation.student.lastName}`.toLowerCase().includes(searchInput.toLowerCase()));
-            return matchDate && matchSearch;
+        let filtered = violations.filter(violation => {
+            const violationDate = new Date(violation.dateOfNotice);
+            const start = startDate ? new Date(startDate) : null;
+            const end = endDate ? new Date(endDate) : null;
+    
+            const matchDate = (!start || violationDate >= start) && (!end || violationDate <= end);
+            return matchDate;
         });
         setFilteredViolations(filtered);
     };
+
+    useEffect(() => {
+        filterViolations();
+    }, [startDate, endDate, violations]);
+    
 
     const openAddModal = () => {
         setIsAddModalOpen(true);
@@ -145,6 +169,11 @@ const ViolationPageAdmin = () => {
         navigate('/login');
     };
 
+    const formatDate = (dateString) => {
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        return new Date(dateString).toLocaleDateString(undefined, options);
+    };
+
     return (
         <div className="violation-page-admin">
             <nav className="nav-bar">
@@ -174,17 +203,20 @@ const ViolationPageAdmin = () => {
                             id="start-date"
                             name="start-date"
                             value={startDate}
-                            onChange={(e) => setStartDate(e.target.value)}
-                        />
-                        <p id="to">to</p>
+                            onChange={handleStartDateChange}
+                         />
+
+                         <p id="to">to</p>
+
                         <input
                             type="date"
                             className="date-input"
                             id="end-date"
                             name="end-date"
                             value={endDate}
-                            onChange={(e) => setEndDate(e.target.value)}
+                            onChange={handleEndDateChange}
                         />
+                        
                     </div>
                     <h2>List of Violation</h2>
                     <table className="violation-table">
@@ -204,7 +236,7 @@ const ViolationPageAdmin = () => {
                                 <tr key={violation.id}>
                                     <td>{violation.student ? `${violation.student.lastName}, ${violation.student.firstName} ${violation.student.middleName}` : 'Unknown Student'}</td>
                                     <td>{violation.offense ? violation.offense.description : 'Unknown Offense'}</td>
-                                    <td>{violation.dateOfNotice}</td>
+                                    <td>{formatDate(violation.dateOfNotice)}</td>
                                     <td>{violation.warningNumber}</td>
                                     <td>{violation.disciplinaryAction}</td>
                                     <td>{violation.csHours}</td>
