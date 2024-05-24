@@ -18,8 +18,9 @@ const EmployeeCsSlip = ({ data }) => {
     }, [data.studentId]);
 
     useEffect(() => {
+        calculateTotalHoursCompleted();
         updateRemainingHours();
-    }, [totalCsHours, data.deduction, completedHours]);
+    }, [totalCsHours, data.deduction, data.reports]);
 
     const loadTotalHours = async () => {
         try {    
@@ -39,11 +40,10 @@ const EmployeeCsSlip = ({ data }) => {
     const updateRemainingHours = () => {
         const requiredHours = parseFloat(totalCsHours);
         const deduction = parseFloat(data.deduction);
-        const remaining = requiredHours - completedHours + deduction;
+        const remaining = requiredHours - (completedHours + deduction);
         setRemainingHours(remaining);
     };
 
-    
     const openModal = useCallback(() => {
         setIsModalOpen(true);
     }, []);
@@ -82,14 +82,12 @@ const EmployeeCsSlip = ({ data }) => {
                 }
             });
 
-            setMessage(response.data);
+            setMessage("CS Report added successfully");
             closeModal();
             data.reports.push(response.data);
-
-            const newCompletedHours = completedHours + parseFloat(newCsReport.hoursCompleted);
-            setCompletedHours(newCompletedHours);
-
-            if (newCompletedHours + parseFloat(data.deduction) >= parseFloat(totalCsHours)) {
+            calculateTotalHoursCompleted(); // Recalculate completed hours
+            
+            if (completedHours + parseFloat(data.deduction) >= parseFloat(totalCsHours)) {
                 alert("Hours required are completed.");
             }
             
@@ -116,6 +114,7 @@ const EmployeeCsSlip = ({ data }) => {
                 totalHours += parseFloat(report.hoursCompleted);
             });
         }
+        setCompletedHours(totalHours);
         return totalHours;
     };
 
@@ -191,13 +190,18 @@ const EmployeeCsSlip = ({ data }) => {
                             ))}
                             <tr>
                                 <td colSpan="8">
-                                    <h3>Total Hours of Community Service Completed: {calculateTotalHoursCompleted()}</h3>
+                                    <h3>Total Hours of Community Service Completed: {completedHours}</h3>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colSpan="8">
+                                    <h3>Remaining Hours of Community Service: {remainingHours}</h3>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
                     <div className="bottom-container">
-                        <button onClick={openModal}  disabled={isSubmitDisabled} className="add-report-button">ADD REPORT</button>
+                        <button onClick={openModal} disabled={isSubmitDisabled} className="add-report-button">ADD REPORT</button>
                         {message && <p>{message}</p>}
                     </div>
                 </div>

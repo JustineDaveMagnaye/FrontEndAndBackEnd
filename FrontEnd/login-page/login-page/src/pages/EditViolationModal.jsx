@@ -157,11 +157,18 @@ const EditViolationModal = ({ isOpen, onClose, onSubmit, violationToEdit }) => {
         }
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(validate());
         if (validate()) {
-            onSubmit(violation);
+            try {
+                // Call the onSubmit function with the updated violation data
+                await onSubmit(violation);
+                // Close the modal after successfully submitting the form
+                onClose();
+            } catch (error) {
+                console.error('Error updating violation:', error);
+                // Handle any errors that occur during the submission process
+            }
         }
     };
 
