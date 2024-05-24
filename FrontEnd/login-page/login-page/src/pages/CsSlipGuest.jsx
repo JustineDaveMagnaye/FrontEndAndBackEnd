@@ -163,7 +163,7 @@ const CsSlipGuest = () => {
                                             <td colSpan="2">
                                                 <Collapsible open={true}>
                                                     <div>
-                                                        <h2>COMMUNITY SERVICE REPORT</h2>
+                                                        <h2>Community Service Report</h2>
                                                         <table className="guest-cs-report-table">
                                                             <thead>
                                                                 <tr>

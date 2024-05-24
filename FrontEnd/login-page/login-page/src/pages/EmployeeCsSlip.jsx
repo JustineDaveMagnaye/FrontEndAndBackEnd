@@ -87,16 +87,17 @@ const EmployeeCsSlip = ({ data }) => {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 }
             });
-    
+
             setMessage("CS Report added successfully");
             closeModal();
             data.reports.push(response.data);
-            calculateTotalHoursCompleted(); // Recalculate completed hours
+            calculateTotalHoursCompleted();
+
             setRemainingHours(prevRemainingHours => {
                 const updatedRemainingHours = parseFloat(totalCsHours) - (completedHours + parseFloat(data.deduction));
-                return updatedRemainingHours; // Update remaining hours based on the most recent state
+                return updatedRemainingHours;
             });
-            
+
             if (completedHours + parseFloat(data.deduction) >= parseFloat(totalCsHours)) {
                 alert("Hours required are completed.");
             }
@@ -107,8 +108,6 @@ const EmployeeCsSlip = ({ data }) => {
         }
     }, [closeModal, data.reports, completedHours, totalCsHours, data.deduction, remainingHours]);
     
-    
-
     const formatDate = (dateString) => {
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
         return new Date(dateString).toLocaleDateString(undefined, options);

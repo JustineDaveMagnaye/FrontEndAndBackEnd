@@ -113,9 +113,18 @@ const EditViolationModal = ({ isOpen, onClose, onSubmit, violationToEdit }) => {
         }
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         onSubmit(violation);
+        if (validate()) {
+            try {
+                await onSubmit(violation);
+                onClose();
+            } catch (error) {
+                console.error('Error updating violation:', error);
+            }
+        }
+
     };
 
     return (
