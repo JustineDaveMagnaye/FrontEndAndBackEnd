@@ -30,6 +30,7 @@
     display: grid;
     justify-items: center;
     align-content: start;
+    border-radius: 6px;
 }
 
 .head {

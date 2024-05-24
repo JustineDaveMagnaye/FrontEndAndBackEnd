@@ -92,7 +92,4 @@ public class CsSlipController {
             return new ResponseEntity<>("Community Service Slip cannot be added", HttpStatus.OK);
         }
     }
-
-
-
 }

@@ -17,27 +17,28 @@ const ViolationGuest = () => {
 
     useEffect(() => {
         loadGuest();
-        let exp = localStorage.getItem('exp')
+        let exp = localStorage.getItem('exp');
         let currentDate = new Date();
-        const role = localStorage.getItem('role')
-        if(exp * 1000 < currentDate.getTime()){
-            navigate('/login')
+        const role = localStorage.getItem('role');
+        if (exp * 1000 < currentDate.getTime()) {
+            navigate('/login');
         }
-        if(role != "ROLE_ROLE_GUEST"){
-            if(role === "ROLE_ROLE_EMPLOYEE"){
+        if (role !== "ROLE_ROLE_GUEST") {
+            if (role === "ROLE_ROLE_EMPLOYEE") {
                 navigate('/employee/cs-list');
-            } else if (role === "ROLE_ROLE_STUDENT"){
-                navigate('/student/violation')
-            } else if (role === "ROLE_ROLE_ADMIN"){
-                navigate('/admin/offense')
+            } else if (role === "ROLE_ROLE_STUDENT") {
+                navigate('/student/violation');
+            } else if (role === "ROLE_ROLE_ADMIN") {
+                navigate('/admin/offense');
             } else {
-                navigate('/login')
+                navigate('/login');
             }
         }
-    }, []);
+    }, [navigate]);
+
     const loadGuest = async () => {
         try {
-            const guestNumber = localStorage.getItem('userId')
+            const guestNumber = localStorage.getItem('userId');
             const response = await axios.get(`http://localhost:8080/Guest/getGuestByGuestNumber/${guestNumber}`, {
                 headers: {
                     'Content-Type': 'application/json',
@@ -48,9 +49,10 @@ const ViolationGuest = () => {
             setGuestData(response.data.id);
             loadBeneficiaries(response.data.id);
         } catch (error) {
-            console.error('Error fetching violations:', error);
+            console.error('Error fetching guest data:', error);
         }
-    }
+    };
+
     const loadBeneficiaries = async (guestId) => {
         try {
             const response = await axios.get(`http://localhost:8080/Guest/guests/${guestId}/get-beneficiaries`, {
@@ -89,7 +91,6 @@ const ViolationGuest = () => {
             console.error('Error fetching violations:', error);
         }
     };
-    
 
     const handleDateChange = (event, setDate, opposingDate, isStartDate) => {
         const date = new Date(event.target.value);
@@ -118,37 +119,32 @@ const ViolationGuest = () => {
             const violationDate = new Date(violation.dateOfNotice);
             const start = startDate ? new Date(startDate) : null;
             const end = endDate ? new Date(endDate) : null;
-    
+
             const matchDate = (!start || violationDate >= start) && (!end || violationDate <= end);
-            return matchDate;
+            const matchStudent = !selectedStudentNumber || violation.student.studentNumber === selectedStudentNumber;
+            return matchDate && matchStudent;
         });
         setFilteredViolations(filtered);
     };
 
     useEffect(() => {
         filterViolations();
-    }, [startDate, endDate, violations]);
-    
+    }, [startDate, endDate, violations, selectedStudentNumber]);
 
     const resetFilters = () => {
         setStartDate('');
         setEndDate('');
+        setSelectedStudentNumber('');
         setFilteredViolations(violations);
     };
-
-    useEffect(() => {
-        filterViolations();
-    }, [startDate, endDate]);
 
     const handleStudentChange = (event) => {
         setSelectedStudentNumber(event.target.value);
     };
 
     const handleLogout = () => {
-        localStorage.setItem('token', '');
-        localStorage.setItem('role', '');
-        localStorage.setItem('exp', '');
-        navigate('/login')
+        localStorage.clear();
+        navigate('/login');
     };
 
     const formatDate = (dateString) => {
@@ -172,10 +168,8 @@ const ViolationGuest = () => {
                 <h1>VIOLATIONS</h1>
 
                 <div className="content-container">
-
                     <div className="date-filter">
-                        
-                    <input
+                        <input
                             type="date"
                             className="date-input"
                             id="start-date"
@@ -192,8 +186,13 @@ const ViolationGuest = () => {
                             value={endDate}
                             onChange={handleEndDateChange}
                         />
-
-                        <select id="studentFilter" name="studentFilter" className="beneficiary-button" onChange={handleStudentChange} value={selectedStudentNumber}>
+                        <select
+                            id="studentFilter"
+                            name="studentFilter"
+                            className="beneficiary-button"
+                            onChange={handleStudentChange}
+                            value={selectedStudentNumber}
+                        >
                             <option value="">All Students</option>
                             {students.map(studentNumber => {
                                 const student = violations.find(violation => violation.student.studentNumber === studentNumber)?.student;
@@ -230,13 +229,13 @@ const ViolationGuest = () => {
 
                             {filteredViolations.length === 0 && (
                                 <tr>
-                                    <td colSpan="7">No results found.</td>
+                                    <td colSpan="6">No results found.</td>
                                 </tr>
                             )}
                         </tbody>
                     </table>
                 </div>
-            </div>    
+            </div>
         </div>
     );
 };
