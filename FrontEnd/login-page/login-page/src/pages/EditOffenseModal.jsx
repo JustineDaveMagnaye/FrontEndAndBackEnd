@@ -43,7 +43,7 @@ const EditOffenseModal = ({ isOpen, onClose, onSubmit, offenseToEdit }) => {
     };
 
     return (
-        <Modal isOpen={isOpen} onRequestClose={onClose} className="modal">
+        <Modal isOpen={isOpen} onRequestClose={onClose} className="modal-container">
             <button onClick={onClose} className="close-btn">&times;</button>
             <h2>Edit Offense</h2>
             <form onSubmit={handleSubmit} className='offense-form-container'>

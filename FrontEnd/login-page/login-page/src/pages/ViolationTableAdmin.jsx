@@ -44,7 +44,7 @@ const ViolationPageAdmin = () => {
 
     useEffect(() => {
         filterViolations();
-    }, [startDate, endDate, searchInput]);
+    }, [startDate, endDate, searchInput, violations]);
 
     const loadViolations = async () => {
         try {
@@ -89,17 +89,13 @@ const ViolationPageAdmin = () => {
             const violationDate = new Date(violation.dateOfNotice);
             const start = startDate ? new Date(startDate) : null;
             const end = endDate ? new Date(endDate) : null;
-    
+
             const matchDate = (!start || violationDate >= start) && (!end || violationDate <= end);
-            return matchDate;
+            const matchSearch = !searchInput || (violation.student && `${violation.student.lastName}, ${violation.student.firstName} ${violation.student.middleName}`.toLowerCase().includes(searchInput.toLowerCase()));
+            return matchDate && matchSearch;
         });
         setFilteredViolations(filtered);
     };
-
-    useEffect(() => {
-        filterViolations();
-    }, [startDate, endDate, violations]);
-    
 
     const openAddModal = () => {
         setIsAddModalOpen(true);
@@ -208,10 +204,8 @@ const ViolationPageAdmin = () => {
                             name="start-date"
                             value={startDate}
                             onChange={handleStartDateChange}
-                         />
-
-                         <p id="to">to</p>
-
+                        />
+                        <p id="to">to</p>
                         <input
                             type="date"
                             className="date-input"
@@ -220,7 +214,6 @@ const ViolationPageAdmin = () => {
                             value={endDate}
                             onChange={handleEndDateChange}
                         />
-                        
                     </div>
                     <h2>List of Violation</h2>
                     <table className="violation-table">
@@ -249,7 +242,6 @@ const ViolationPageAdmin = () => {
                                     </td>
                                 </tr>
                             ))}
-
                             {filteredViolations.length === 0 && (
                                 <tr>
                                     <td colSpan="7">No results found.</td>
@@ -261,7 +253,6 @@ const ViolationPageAdmin = () => {
                         <a href="/admin/cs-slip"><button className="create-cs-btn">CREATE CS SLIP</button></a>
                         <button className="add-violation-btn" onClick={openAddModal}>ADD VIOLATION</button>
                     </div>
-
                 </div>
             </div>
             <AddViolationModal
