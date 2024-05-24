@@ -18,8 +18,9 @@ const EmployeeCsSlip = ({ data }) => {
     }, [data.studentId]);
 
     useEffect(() => {
+        calculateTotalHoursCompleted();
         updateRemainingHours();
-    }, [totalCsHours, data.deduction, completedHours]);
+    }, [totalCsHours, data.deduction, data.reports]);
 
     const loadTotalHours = async () => {
         try {    
@@ -39,11 +40,10 @@ const EmployeeCsSlip = ({ data }) => {
     const updateRemainingHours = () => {
         const requiredHours = parseFloat(totalCsHours);
         const deduction = parseFloat(data.deduction);
-        const remaining = requiredHours - completedHours + deduction;
+        const remaining = requiredHours - (completedHours + deduction);
         setRemainingHours(remaining);
     };
 
-    
     const openModal = useCallback(() => {
         setIsModalOpen(true);
     }, []);
@@ -57,13 +57,19 @@ const EmployeeCsSlip = ({ data }) => {
         try {
             const startTimeString = `${newCsReport.dateOfCs}T${newCsReport.timeIn}`;
             const endTimeString = `${newCsReport.dateOfCs}T${newCsReport.timeOut}`;
-
+    
             const startTime = new Date(startTimeString);
             const endTime = new Date(endTimeString);
             const diffInMs = endTime - startTime;
             const hours = diffInMs / (1000 * 60 * 60);
             newCsReport.hoursCompleted = hours.toFixed(2);
-
+    
+            // Check if the hours completed exceeds the remaining hours
+            if (parseFloat(newCsReport.hoursCompleted) > remainingHours) {
+                setMessage("Hours completed cannot exceed remaining hours.");
+                return; // Stop execution if validation fails
+            }
+    
             const params = {
                 dateOfCs: newCsReport.dateOfCs,
                 timeIn: startTime,
@@ -73,7 +79,7 @@ const EmployeeCsSlip = ({ data }) => {
                 status: newCsReport.status,
                 remarks: newCsReport.remarks
             };
-
+    
             const response = await axios.post(`http://localhost:8080/CSReport/commServReport/${csSlipId}`, params, {
                 headers: {
                     'Content-Type': 'application/json',
@@ -81,15 +87,17 @@ const EmployeeCsSlip = ({ data }) => {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 }
             });
-
-            setMessage(response.data);
+    
+            setMessage("CS Report added successfully");
             closeModal();
             data.reports.push(response.data);
-
-            const newCompletedHours = completedHours + parseFloat(newCsReport.hoursCompleted);
-            setCompletedHours(newCompletedHours);
-
-            if (newCompletedHours + parseFloat(data.deduction) >= parseFloat(totalCsHours)) {
+            calculateTotalHoursCompleted(); // Recalculate completed hours
+            setRemainingHours(prevRemainingHours => {
+                const updatedRemainingHours = parseFloat(totalCsHours) - (completedHours + parseFloat(data.deduction));
+                return updatedRemainingHours; // Update remaining hours based on the most recent state
+            });
+            
+            if (completedHours + parseFloat(data.deduction) >= parseFloat(totalCsHours)) {
                 alert("Hours required are completed.");
             }
             
@@ -97,7 +105,9 @@ const EmployeeCsSlip = ({ data }) => {
             console.error('Error adding CsReport:', error);
             setMessage("CS Report cannot be added");
         }
-    }, [closeModal, data.reports, completedHours, totalCsHours, data.deduction]);
+    }, [closeModal, data.reports, completedHours, totalCsHours, data.deduction, remainingHours]);
+    
+    
 
     const formatDate = (dateString) => {
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -116,6 +126,7 @@ const EmployeeCsSlip = ({ data }) => {
                 totalHours += parseFloat(report.hoursCompleted);
             });
         }
+        setCompletedHours(totalHours);
         return totalHours;
     };
 
@@ -191,14 +202,19 @@ const EmployeeCsSlip = ({ data }) => {
                             ))}
                             <tr>
                                 <td colSpan="8">
-                                    <h3>Total Hours of Community Service Completed: {calculateTotalHoursCompleted()}</h3>
+                                    <h3>Total Hours of Community Service Completed: {completedHours}</h3>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colSpan="8">
+                                    <h3>Remaining Hours of Community Service: {remainingHours}</h3>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
                     <div className="bottom-container">
-                        <button onClick={openModal}  disabled={isSubmitDisabled} className="add-report-button">ADD REPORT</button>
-                        {message && <p>{message}</p>}
+                        <button onClick={openModal} disabled={isSubmitDisabled} className="add-report-button">ADD REPORT</button>
+                        {message && <p className="error">{message}</p>}
                     </div>
                 </div>
             </div>

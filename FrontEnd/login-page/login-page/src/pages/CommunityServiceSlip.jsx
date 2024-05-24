@@ -123,9 +123,9 @@ const CsSlipPageAdmin = () => {
         }
     
         if (name === 'reasonOfCs') {
-            const letterPattern = /^[a-zA-Z]*$/;
+            const letterPattern = /^[a-zA-Z\s]*$/;
             if (!letterPattern.test(value)) {
-                newErrors.reasonOfCs = 'Reason for Community Service should only contain letters.';
+                newErrors.reasonOfCs = 'Reason for Community Service should only contain letters and spaces.';
             } else {
                 delete newErrors.reasonOfCs;
             }
@@ -153,35 +153,36 @@ const CsSlipPageAdmin = () => {
     };
 
     const validate = () => {
-    const errors = {};
-    const studentIdPattern = /^CT\d{2}-\d{4}$/;
-    if (!formData.studentId) {
-        errors.studentId = 'Student ID is required';
-    } else if (!studentIdPattern.test(formData.studentId)) {
-        errors.studentId = 'Invalid Input. Please try again.';
-    }
-
-    if (!formData.deduction) {
-        errors.deduction = 'Hours to Deduct are required';
-    } else if (isNaN(formData.deduction) || formData.deduction <= 0) {
-        errors.deduction = 'Hours to Deduct must be a positive number';
-    }
-
-    if (!formData.areaId) {
-        errors.areaId = 'Area of Community Service is required';
-    }
-
-    if (!formData.reasonOfCs) {
-        errors.reasonOfCs = 'Reason for Community Service is required';
-    } else {
-        const letterPattern = /^[a-zA-Z]*$/;
-        if (!letterPattern.test(formData.reasonOfCs)) {
-            errors.reasonOfCs = 'Reason for Community Service should only contain letters.';
+        const errors = {};
+        const studentIdPattern = /^CT\d{2}-\d{4}$/;
+        
+        if (!formData.studentId) {
+            errors.studentId = 'Student ID is required';
+        } else if (!studentIdPattern.test(formData.studentId)) {
+            errors.studentId = 'Invalid Input. Please try again.';
         }
-    }
-
-    return errors;
-};
+    
+        if (!formData.deduction) {
+            errors.deduction = 'Hours to Deduct are required';
+        } else if (isNaN(formData.deduction) || formData.deduction <= 0) {
+            errors.deduction = 'Hours to Deduct must be a positive number';
+        }
+    
+        if (!formData.areaId) {
+            errors.areaId = 'Area of Community Service is required';
+        }
+    
+        if (!formData.reasonOfCs) {
+            errors.reasonOfCs = 'Reason for Community Service is required';
+        } else {
+            const spaceAllowedPattern = /^[a-zA-Z\s]*$/;
+            if (!spaceAllowedPattern.test(formData.reasonOfCs)) {
+                errors.reasonOfCs = 'Reason for Community Service should only contain letters and spaces.';
+            }
+        }
+    
+        return errors;
+    };
 
     const fetchStudentDetails = async (studentId) => {
         try {
@@ -201,7 +202,7 @@ const CsSlipPageAdmin = () => {
                     setFormData(prevState => ({
                         ...prevState,
                         name: `${studentData.lastName}, ${studentData.firstName} ${studentData.middleName}`,
-                        section: studentData.section.sectionCourse,
+                        section: studentData.section.sectionName,
                         head: studentData.section.clusterHead
                     }));
                 }

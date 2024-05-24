@@ -4,7 +4,6 @@ import axios from 'axios';
 import '../styles/AddEditViolationModal.css';
 
 const EditViolationModal = ({ isOpen, onClose, onSubmit, violationToEdit }) => {
-    const [errors, setErrors] = useState({});
     const [offenses, setOffenses] = useState([]);
     const [students, setStudents] = useState([]);
     const [employees, setEmployees] = useState([]);
@@ -21,49 +20,6 @@ const EditViolationModal = ({ isOpen, onClose, onSubmit, violationToEdit }) => {
         approvedById: "",
         approvedByName: ""
     });
-
-    const validate = () => {
-        const studentNumberPattern = /CT[0-9]{2}-[0-9]{4}/;
-        const currentDate = new Date().toISOString().split('T')[0];
-        const specialCharPattern = /[^a-zA-Z0-9- ]/;
-        const numberPattern = /[0-9]/;
-        let validationErrors = {};
-
-        if (!violation.dateOfNotice) {
-            validationErrors.dateOfNotice = "Date of Notice is required";
-        } else if (violation.dateOfNotice > currentDate) {
-            validationErrors.dateOfNotice = "Date of Notice cannot be in the future";
-        }
-
-        if (!violation.warningNumber) {
-            validationErrors.warningNumber = "Number of Occurence is required";
-        } else if (!numberPattern.test(violation.warningNumber) || violation.warningNumber <= 0) {
-            validationErrors.warningNumber = "Number of Occurence should only be positive numbers";
-        } 
-        
-        if (!violation.csHours) {
-            validationErrors.csHours = "Community Service Hours is required";
-        } else if (!numberPattern.test(violation.csHours) || violation.csHours <= 0) {
-            validationErrors.csHours = "Community Service Hours should only be positive numbers";
-        } 
-
-        if (!violation.studentNumber) {
-            validationErrors.studentNumber = "Student Number is required";
-        } else if (specialCharPattern.test(violation.studentNumber)) {
-            validationErrors.studentNumber = "Student Number only accepts alpha-numeric characters and a dash(-) special character";
-        } else if (!studentNumberPattern.test(violation.studentNumber)) {
-            validationErrors.studentNumber = "Student Number format is incorrect";
-        }
-
-        if (!violation.disciplinaryAction) {
-            validationErrors.disciplinaryAction = "Disciplinary Action is required";
-        } else if (specialCharPattern.test(violation.disciplinaryAction)) {
-            validationErrors.disciplinaryAction = "Disciplinary Action should not contain special characters";
-        }
-
-        setErrors(validationErrors);
-        return Object.keys(validationErrors).length === 0;
-    };
 
     useEffect(() => {
         if (violationToEdit) {
@@ -159,10 +115,7 @@ const EditViolationModal = ({ isOpen, onClose, onSubmit, violationToEdit }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(validate());
-        if (validate()) {
-            onSubmit(violation);
-        }
+        onSubmit(violation);
     };
 
     return (
@@ -191,29 +144,25 @@ const EditViolationModal = ({ isOpen, onClose, onSubmit, violationToEdit }) => {
                     <div className="form-group">
                         <label>Date of Notice</label>
                         <input type="date" name="dateOfNotice" value={violation.dateOfNotice} onChange={handleInputChange} required />
-                        {errors.dateOfNotice && <p className="error">{errors.dateOfNotice}</p>}
                     </div>
                     <div className="form-group">
                         <label>Number of Occurrence</label>
-                        <input type="text" name="warningNumber" value={violation.warningNumber} onChange={handleInputChange} required />
-                        {errors.warningNumber && <p className="error">{errors.warningNumber}</p>}
+                        <input type="text" name="occurrence" value={violation.warningNumber} onChange={handleInputChange} required />
                     </div>
                     <div className="form-group">
                         <label>Disciplinary Action</label>
                         <input type="text" name="disciplinaryAction" value={violation.disciplinaryAction} onChange={handleInputChange} required />
-                        {errors.disciplinaryAction && <p className="error">{errors.disciplinaryAction}</p>}
                     </div>
                     <div className="form-group">
                         <label>Community Service Hours</label>
                         <input type="number" name="csHours" value={violation.csHours} onChange={handleInputChange} required />
-                        {errors.csHours && <p className="error">{errors.csHours}</p>}
                     </div>
                     <div className="form-group">
-                        <label>Approved by: Employee Number</label>
+                        <label>Approved by Employee Number</label>
                         <input type="text" name="approvedById" value={violation.approvedById} onChange={handleInputChange} required />
                     </div>
                     <div className="form-group">
-                        <label>Approved by: Employee Name</label>
+                        <label>Approved by Employee Name</label>
                         <input type="text" name="approvedByName" value={violation.approvedByName} disabled />
                     </div>
                 </div>
