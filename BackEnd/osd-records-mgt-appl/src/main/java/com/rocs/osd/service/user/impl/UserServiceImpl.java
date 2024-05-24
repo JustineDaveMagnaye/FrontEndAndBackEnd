@@ -72,17 +72,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = this.userRepository.findUserByUsername(username);
-        if(user == null) {
-            LOGGER.error("User not found...");
-            throw new UsernameNotFoundException("User not found...");
-        } else {
-            validateLoginAttempt(user);
-            user.setLastLoginDate(new Date());
-            this.userRepository.save(user);
-            UserPrincipal userPrincipal = new UserPrincipal(user);
-            LOGGER.error("User information found...");
-            return userPrincipal;
+        if (user == null) {
+            LOGGER.error("Username not found...");
+            throw new UsernameNotFoundException("Username not found.");
         }
+        validateLoginAttempt(user);
+        user.setLastLoginDate(new Date());
+        this.userRepository.save(user);
+        UserPrincipal userPrincipal = new UserPrincipal(user);
+        LOGGER.info("User information found...");
+        return userPrincipal;
     }
     private void validateLoginAttempt(User user) {
         if(!user.isLocked()) {
@@ -155,7 +154,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             user.setAuthorities(Arrays.stream(ROLE_EMPLOYEE.getAuthorities()).toList());
         } else  {
             LOGGER.info("Guest account created!");
-                user.setUserId(generateUserId());
+                user.setUserId(newUser.getGuest().getGuestNumber());
                 user.setLocked(false);
                 user.setRole(ROLE_GUEST.name());
                 user.setAuthorities(Arrays.stream(ROLE_GUEST.getAuthorities()).toList());
@@ -225,7 +224,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     private void validateNewUsername(String newUsername)
-            throws UserNotFoundException, UsernameExistsException {
+            throws UserNotFoundException, UsernameExistsException, PersonExistsException {
         User userByNewUsername = findUserByUsername(newUsername);
         if (StringUtils.isNotBlank(StringUtils.EMPTY)) {
             User currentUser = findUserByUsername(StringUtils.EMPTY);
@@ -233,11 +232,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 throw new UserNotFoundException("User not found.");
             }
             if (userByNewUsername != null && !userByNewUsername.getId().equals(currentUser.getId())) {
-                throw new UsernameExistsException("Username already exists. ");
+                throw new PersonExistsException("Username already exists.");
             }
         } else {
             if (userByNewUsername != null) {
-                throw new UsernameExistsException("Username already exists. ");
+                throw new PersonExistsException("Username already exists.");
             }
         }
     }

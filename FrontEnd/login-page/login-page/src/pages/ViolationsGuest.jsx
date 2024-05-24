@@ -12,10 +12,11 @@ const ViolationGuest = () => {
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [filteredViolations, setFilteredViolations] = useState([]);
+    const [guestData, setGuestData] = useState([]);
     const navigate = useNavigate();
 
     useEffect(() => {
-        loadViolations();
+        loadGuest();
         let exp = localStorage.getItem('exp')
         let currentDate = new Date();
         const role = localStorage.getItem('role')
@@ -34,18 +35,52 @@ const ViolationGuest = () => {
             }
         }
     }, []);
-
-
-    const loadViolations = async () => {
+    const loadGuest = async () => {
         try {
-            const response = await axios.get("http://localhost:8080/Violation/violations", {
+            const guestNumber = localStorage.getItem('userId')
+            const response = await axios.get(`http://localhost:8080/Guest/getGuestByGuestNumber/${guestNumber}`, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 }
             });
-            const violationsData = response.data;
+            setGuestData(response.data.id);
+            loadBeneficiaries(response.data.id);
+        } catch (error) {
+            console.error('Error fetching violations:', error);
+        }
+    }
+    const loadBeneficiaries = async (guestId) => {
+        try {
+            const response = await axios.get(`http://localhost:8080/Guest/guests/${guestId}/get-beneficiaries`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                }
+            });
+            const beneficiaries = response.data.flatMap(guest => guest.beneficiary);
+            const studentIds = beneficiaries.map(beneficiary => beneficiary.id);
+            loadViolations(studentIds);
+        } catch (error) {
+            console.error('Error fetching beneficiaries:', error);
+        }
+    };
+
+    const loadViolations = async (studentIds) => {
+        try {
+            const promises = studentIds.map(studentId =>
+                axios.get(`http://localhost:8080/Violation/violation/student/${studentId}`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    }
+                })
+            );
+            const responses = await Promise.all(promises);
+            const violationsData = responses.flatMap(response => response.data);
             setViolations(violationsData);
 
             const uniqueStudentNumbers = Array.from(new Set(violationsData.map(violation => violation.student.studentNumber)));
@@ -54,6 +89,7 @@ const ViolationGuest = () => {
             console.error('Error fetching violations:', error);
         }
     };
+    
 
     const handleDateChange = (event, setDate, opposingDate, isStartDate) => {
         const date = new Date(event.target.value);
