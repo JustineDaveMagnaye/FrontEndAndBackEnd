@@ -14,6 +14,8 @@ public interface CsSlipService {
     List<CsSlip> getCsSlipByStudentName(String name);
     List<CsSlip> getCsSlipByStudentNumber(String studentNumber);
 
+    List<CsSlip> getCsSlipByStudentId(Long studentId);
+
     List<CsSlip> getCsSlipReportByStudentName(String name);
     List<CsSlip> getCsSlipReportByStationName(String name);
 
