@@ -19,10 +19,13 @@ const CsListPageAdmin = () => {
         reports: []
     });
 
-    const [csSlips, setCsSlips] = useState([]); // hook pang store lahat ng data sa community service slips
-    const [filteredCsSlips, setFilteredCsSlips] = useState([]); // hook pang store sa filtered slips
-    const [searchInput, setSearchInput] = useState(''); // hook pang store sa search input
+    const [csSlips, setCsSlips] = useState([]);
+    const [filteredCsSlips, setFilteredCsSlips] = useState([]);
+    const [searchInput, setSearchInput] = useState('');
+    const [isCollapsibleOpen, setIsCollapsibleOpen] = useState(false);
+
     const navigate = useNavigate();
+
     useEffect(() => {
         loadCsSlips();
         let exp = localStorage.getItem('exp')
@@ -45,7 +48,6 @@ const CsListPageAdmin = () => {
     }, []);
 
     useEffect(() => {
-        // Hook filter
         filterCsSlips();
     }, [searchInput, csSlips]);
 
@@ -74,9 +76,10 @@ const CsListPageAdmin = () => {
             return studentName.includes(searchInput.toLowerCase());
         });
         setFilteredCsSlips(filtered);
-    };
+    };  
 
     const csSlipsToDisplay = searchInput ? filteredCsSlips : csSlips;
+
     const handleLogout = () => {
         localStorage.setItem('token', '');
         localStorage.setItem('role', '');
@@ -85,17 +88,22 @@ const CsListPageAdmin = () => {
     };
 
     const handleRowClick = (csSlip) => {
-        setCsReport({
-            id: csSlip.id,
-            studentNumber: csSlip.student.studentNumber,
-            name: `${csSlip.student.firstName} ${csSlip.student.lastName}`,
-            section: csSlip.student.section.sectionName,
-            head: csSlip.student.section.clusterHead,
-            deduction: csSlip.deduction,
-            area: csSlip.areaOfCommServ.stationName,
-            reason: csSlip.reasonOfCs,
-            reports: csSlip.reports
-        });
+        if (csReport.id === csSlip.id && isCollapsibleOpen) {
+            setIsCollapsibleOpen(false);
+        } else {
+            setCsReport({
+                id: csSlip.id,
+                studentNumber: csSlip.student.studentNumber,
+                name: `${csSlip.student.firstName} ${csSlip.student.lastName}`,
+                section: csSlip.student.section.sectionName,
+                head: csSlip.student.section.clusterHead,
+                deduction: csSlip.deduction,
+                area: csSlip.areaOfCommServ.stationName,
+                reason: csSlip.reasonOfCs,
+                reports: csSlip.reports
+            });
+            setIsCollapsibleOpen(true);
+        }
     };
 
     return (
@@ -133,18 +141,9 @@ const CsListPageAdmin = () => {
                         <tbody>
                             {csSlipsToDisplay.map((csSlip, index) => (
                                 <tr key={index} onClick={() => handleRowClick(csSlip)}>
-                                    <td>
-                                        
-                                            {csSlip.student.studentNumber}
-                                        
-                                    </td>
-                                    <td>
-                                            {`${csSlip.student.firstName} ${csSlip.student.lastName}`}
-                                        
-                                    </td>
-                                    <td>
-                                            {csSlip.areaOfCommServ.stationName}
-                                    </td>
+                                    <td>{csSlip.student.studentNumber}</td>
+                                    <td>{`${csSlip.student.firstName} ${csSlip.student.lastName}`}</td>
+                                    <td>{csSlip.areaOfCommServ.stationName}</td>
                                 </tr>
                             ))}
                             {csSlipsToDisplay.length === 0 && (
@@ -160,6 +159,7 @@ const CsListPageAdmin = () => {
             <div>
                 <CommunityServiceReport
                      data = {csReport}
+                    isOpen={isCollapsibleOpen}
                 />
             </div>
         </div>

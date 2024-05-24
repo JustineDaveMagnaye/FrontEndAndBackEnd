@@ -3,13 +3,17 @@ import axios from 'axios';
 import '../styles/ViolationGuest.css';
 import logo from '../assets/logo_new.png';
 import user from '../assets/user.png';
-
 import { useNavigate } from "react-router-dom";
+
 const ViolationGuest = () => {
     const [violations, setViolations] = useState([]);
     const [students, setStudents] = useState([]);
     const [selectedStudentNumber, setSelectedStudentNumber] = useState('');
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+    const [filteredViolations, setFilteredViolations] = useState([]);
     const navigate = useNavigate();
+
     useEffect(() => {
         loadViolations();
         let exp = localStorage.getItem('exp')
@@ -51,24 +55,66 @@ const ViolationGuest = () => {
         }
     };
 
+    const handleDateChange = (event, setDate) => {
+        const date = new Date(event.target.value);
+        const currentYear = new Date().getFullYear();
+        if (date.getFullYear() > currentYear) {
+            alert('Date exceeds the current year');
+        } else {
+            setDate(event.target.value);
+        }
+    };
+
+    const handleStartDateChange = (event) => {
+        handleDateChange(event, setStartDate);
+    };
+
+    const handleEndDateChange = (event) => {
+        handleDateChange(event, setEndDate);
+    };
+
+    const filterViolations = () => {
+        let filtered = violations.filter(violation => {
+            const violationDate = new Date(violation.dateOfNotice);
+            const start = startDate ? new Date(startDate) : null;
+            const end = endDate ? new Date(endDate) : null;
+    
+            const matchDate = (!start || violationDate >= start) && (!end || violationDate <= end);
+            return matchDate;
+        });
+        setFilteredViolations(filtered);
+    };
+
+    useEffect(() => {
+        filterViolations();
+    }, [startDate, endDate, violations]);
+    
+
+    const resetFilters = () => {
+        setStartDate('');
+        setEndDate('');
+        setFilteredViolations(violations);
+    };
+
+    useEffect(() => {
+        filterViolations();
+    }, [startDate, endDate]);
+
     const handleStudentChange = (event) => {
         setSelectedStudentNumber(event.target.value);
     };
 
-    const filteredViolations = selectedStudentNumber
-        ? violations.filter(violation => violation.student.studentNumber === selectedStudentNumber)
-        : violations;
-        const handleLogout = () => {
-            localStorage.setItem('token', '');
-            localStorage.setItem('role', '');
-            localStorage.setItem('exp', '');
-            navigate('/login')
-        };
+    const handleLogout = () => {
+        localStorage.setItem('token', '');
+        localStorage.setItem('role', '');
+        localStorage.setItem('exp', '');
+        navigate('/login')
+    };
 
-        const formatDate = (dateString) => {
-            const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
-            return new Date(dateString).toLocaleDateString(undefined, options);
-        };
+    const formatDate = (dateString) => {
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        return new Date(dateString).toLocaleDateString(undefined, options);
+    };
 
     return (
         <div className="violation-guest">
@@ -84,8 +130,29 @@ const ViolationGuest = () => {
 
             <div className="container">
                 <h1>VIOLATIONS</h1>
+
                 <div className="content-container">
+
                     <div className="date-filter">
+                        
+                    <input
+                            type="date"
+                            className="date-input"
+                            id="start-date"
+                            name="start-date"
+                            value={startDate}
+                            onChange={handleStartDateChange}
+                        />
+                        <p id="to">to</p>
+                        <input
+                            type="date"
+                            className="date-input"
+                            id="end-date"
+                            name="end-date"
+                            value={endDate}
+                            onChange={handleEndDateChange}
+                        />
+
                         <select id="studentFilter" name="studentFilter" className="beneficiary-button" onChange={handleStudentChange} value={selectedStudentNumber}>
                             <option value="">All Students</option>
                             {students.map(studentNumber => {
@@ -120,6 +187,12 @@ const ViolationGuest = () => {
                                     <td>{violation.csHours}</td>
                                 </tr>
                             ))}
+
+                            {filteredViolations.length === 0 && (
+                                <tr>
+                                    <td colSpan="7">No results found.</td>
+                                </tr>
+                            )}
                         </tbody>
                     </table>
                 </div>

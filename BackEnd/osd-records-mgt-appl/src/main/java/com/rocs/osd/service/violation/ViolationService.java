@@ -10,6 +10,8 @@ public interface ViolationService {
     List<Violation> getAllViolation();
     Optional<Violation> getViolationById(Long id);
     List<Violation> getAllViolationByStudentId(Long studentId);
+    List<Violation> getAllViolationByStudentNumber(String studentNumber);
+
     List<Violation> getAllViolationByStudentName(String name);
 
     List<Violation> getViolationsByDateRange(Date startDate, Date endDate);

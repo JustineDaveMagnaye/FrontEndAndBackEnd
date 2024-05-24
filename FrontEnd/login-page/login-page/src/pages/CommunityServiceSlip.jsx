@@ -26,6 +26,7 @@ const CsSlipPageAdmin = () => {
     const [successMessage, setSuccessMessage] = useState('');
     const [deductionError, setDeductionError] = useState('');
     const [reasonError, setReasonError] = useState('');
+    const [isFormValid, setIsFormValid] = useState(false);
 
     const navigate = useNavigate();
 
@@ -70,11 +71,10 @@ const CsSlipPageAdmin = () => {
 
         fetchData();
     }, [navigate]);
-
     useEffect(() => {
         const fetchData = async () => {
             try {
-                if (formData.studentId.trim() !== '') {
+                if (formData.studentId.trim() !== '' && !errors.studentId) {
                     debouncedFetchStudentDetails(formData.studentId);
                     debouncedFetchStudentViolation(formData.studentId);
                     fetchTotalHoursRequired(formData.studentId);
@@ -95,7 +95,11 @@ const CsSlipPageAdmin = () => {
         };
 
         fetchData();
-    }, [formData.studentId]);
+    }, [formData.studentId, errors.studentId]);
+
+    useEffect(() => {
+        setIsFormValid(Object.keys(errors).length === 0 && formData.studentId && formData.deduction && formData.areaId && formData.reasonOfCs);
+    }, [errors, formData]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -103,8 +107,31 @@ const CsSlipPageAdmin = () => {
             ...prevState,
             [name]: value
         }));
-
-
+    
+        if (name === 'studentId') {
+            const studentIdPattern = /^CT\d{2}-\d{4}$/;
+            if (!studentIdPattern.test(value)) {
+                setErrors(prevErrors => ({
+                    ...prevErrors,
+                    studentId: 'Invalid Input. Please try again.'
+                }));
+            } else {
+                const studentExists = students.some(student => student.studentNumber === value);
+                if (!studentExists) {
+                    setErrors(prevErrors => ({
+                        ...prevErrors,
+                        studentId: 'Student not registered. Please register first.'
+                    }));
+                } else {
+                    setErrors(prevErrors => {
+                        const newErrors = { ...prevErrors };
+                        delete newErrors.studentId;
+                        return newErrors;
+                    });
+                }
+            }
+        }
+    
         if (errors[name]) {
             const newErrors = { ...errors };
             delete newErrors[name];
@@ -114,8 +141,11 @@ const CsSlipPageAdmin = () => {
 
     const validate = () => {
         const errors = {};
+        const studentIdPattern = /^CT\d{2}-\d{4}$/;
         if (!formData.studentId) {
             errors.studentId = 'Student ID is required';
+        } else if (!studentIdPattern.test(formData.studentId)) {
+            errors.studentId = 'Invalid Input. Please try again.';
         }
         if (!formData.deduction) {
             errors.deduction = 'Hours to Deduct are required';
@@ -207,57 +237,52 @@ const CsSlipPageAdmin = () => {
     };
 
     const handleSubmit = async (e) => {
-    e.preventDefault();
-    const validationErrors = validate();
-    if (Object.keys(validationErrors).length > 0) {
-        setErrors(validationErrors);
-        return;
-    }
-    try {
-        if (parseInt(formData.deduction) > parseInt(totalHoursRequired)) {
-            setDeductionError('Hours to Deduct cannot be higher than total hours');
+        e.preventDefault();
+        const validationErrors = validate();
+        if (Object.keys(validationErrors).length > 0) {
+            setErrors(validationErrors);
             return;
         }
-        const token = localStorage.getItem('token');
-        const student = students.find(student => student.studentNumber === formData.studentId);
-        const id = student && student.id;
-        if (id) {
-            const payload = {
-                id,
-                student: { id },
-                reasonOfCs: formData.reasonOfCs,
-                areaOfCommServ: { id: formData.areaId },
-                deduction: formData.deduction
-            };
-            const response = await axios.post('http://localhost:8080/CSSlip/csSlip', payload, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'Authorization': `Bearer ${token}`,
-                }
-            });
+        try {
+            const token = localStorage.getItem('token');
+            const student = students.find(student => student.studentNumber === formData.studentId);
+            const id = student && student.id;
+            if (id) {
+                const payload = {
+                    id,
+                    student: { id },
+                    reasonOfCs: formData.reasonOfCs,
+                    areaOfCommServ: { id: formData.areaId },
+                    deduction: formData.deduction
+                };
+                const response = await axios.post('http://localhost:8080/CSSlip/csSlip', payload, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'Authorization': `Bearer ${token}`,
+                    }
+                });
 
-            if (response && response.data) {
-                setMessage('');
-                setSuccessMessage('Community Service Slip created successfully!');
-                setTimeout(() => {
-                    setSuccessMessage('');
-                }, 5000); 
+                if (response && response.data) {
+                    setMessage('');
+                    setSuccessMessage('Community Service Slip created successfully!');
+                    setTimeout(() => {
+                        setSuccessMessage('');
+                    }, 5000); // Clear success message after 5 seconds
+                } else {
+                    console.error('Response data is undefined:', response);
+                    setMessage('Unexpected error occurred.');
+                }
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            if (error.response && error.response.data && error.response.data.message) {
+                setMessage(error.response.data.message);
             } else {
-                console.error('Response data is undefined:', response);
-                setMessage('Unexpected error occurred.');
+                setMessage('An error occurred while processing the request.');
             }
         }
-    } catch (error) {
-        console.error('Error:', error);
-        if (error.response && error.response.data && error.response.data.message) {
-            setMessage(error.response.data.message);
-        } else {
-            setMessage('An error occurred while processing the request.');
-        }
-    }
-};
-
+    };
 
     const debouncedFetchStudentDetails = debounce(fetchStudentDetails, 300);
     const debouncedFetchStudentViolation = debounce(fetchStudentViolation, 300);
@@ -280,7 +305,7 @@ const CsSlipPageAdmin = () => {
                     <img src={user} alt="profile" className="profile"/>
                 </div>
             </nav>
-            <div className="csSlipcontainer">
+            <div className="csslip-box">
                 <h1>COMMUNITY SERVICE SLIP</h1>
                 <div className="cs-slip-container">
                     <form onSubmit={handleSubmit}>
@@ -346,7 +371,7 @@ const CsSlipPageAdmin = () => {
                                 <label>Total Hours Required: </label>
                                 <input type="text" disabled className="input-hours" name="hoursRequired" value={totalHoursRequired} readOnly />
                             </div>
-                            <button type="submit" className="create-button">CREATE</button>
+                            <button type="submit" className="create-button" disabled={!isFormValid} >CREATE</button>
                             {message && <div className="message error">{message}</div>}
                             {successMessage && <div className="message success">{successMessage}</div>}
                         </div>

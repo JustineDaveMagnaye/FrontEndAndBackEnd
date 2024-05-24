@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
-import axios from "axios";
+import axios from 'axios';
 import '../styles/AddEditViolationModal.css';
 
 const EditViolationModal = ({ isOpen, onClose, onSubmit, violationToEdit }) => {
     const [offenses, setOffenses] = useState([]);
+    const [students, setStudents] = useState([]);
+    const [employees, setEmployees] = useState([]);
     const [violation, setViolation] = useState({
         studentId: "",
         studentName: "",
@@ -15,26 +17,22 @@ const EditViolationModal = ({ isOpen, onClose, onSubmit, violationToEdit }) => {
         warningNumber: "",
         disciplinaryAction: "",
         csHours: "",
-        // approvedBy: "",
+        approvedById: "",
+        approvedByName: ""
     });
 
     useEffect(() => {
         if (violationToEdit) {
-            setViolation(violationToEdit);
+            const formattedViolation = {
+                ...violationToEdit,
+                dateOfNotice: new Date(violationToEdit.dateOfNotice).toISOString().split('T')[0],
+            };
+            setViolation(formattedViolation);
         }
     }, [violationToEdit]);
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setViolation({ ...violation, [name]: value });
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        onSubmit(violation);
-    };
-
     useEffect(() => {
+
         const fetchOffenses = async () => {
             try {
                 const response = await axios.get('http://localhost:8080/Offense/offenses', {
@@ -50,7 +48,75 @@ const EditViolationModal = ({ isOpen, onClose, onSubmit, violationToEdit }) => {
             }
         };
         fetchOffenses();
+
+        const fetchData = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                const [studentsResponse, employeesResponse] = await Promise.all([
+                    axios.get('http://localhost:8080/Student/students', {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    }),
+                    axios.get('http://localhost:8080/Employee/employees', {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    })
+                ]);
+                setStudents(studentsResponse.data);
+                setEmployees(employeesResponse.data);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
+
+        fetchData();
     }, []);
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setViolation({ ...violation, [name]: value });
+
+        if (name === 'studentId') {
+            fetchStudentDetails(value);
+        }
+
+        if (name === 'approvedById') {
+            fetchEmployeeDetails(value);
+        }
+    };
+
+    const fetchStudentDetails = async (studentId) => {
+        const student = students.find(student => student.studentNumber === studentId);
+        if (student) {
+            setViolation(prevState => ({
+                ...prevState,
+                studentName: `${student.lastName}, ${student.firstName} ${student.middleName}`,
+            }));
+        } else {
+            setViolation(prevState => ({
+                ...prevState,
+                studentName: ''
+            }));
+        }
+    };
+
+    const fetchEmployeeDetails = async (employeeNumber) => {
+        const employee = employees.find(employee => employee.employeeNumber === employeeNumber);
+        if (employee) {
+            setViolation(prevState => ({
+                ...prevState,
+                approvedByName: `${employee.lastName}, ${employee.firstName} ${employee.middleName}`
+            }));
+        } else {
+            setViolation(prevState => ({
+                ...prevState,
+                approvedByName: ''
+            }));
+        }
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        onSubmit(violation);
+    };
 
     return (
         <Modal isOpen={isOpen} onRequestClose={onClose} className="modal">
@@ -91,13 +157,16 @@ const EditViolationModal = ({ isOpen, onClose, onSubmit, violationToEdit }) => {
                         <label>Community Service Hours</label>
                         <input type="number" name="csHours" value={violation.csHours} onChange={handleInputChange} required />
                     </div>
-                    {/* <div className="form-group">
-                        <label>Approved by</label>
-                        <input type="text" name="approvedBy" value={violation.approvedBy} onChange={handleInputChange} required />
-                    </div> */}
+                    <div className="form-group">
+                        <label>Approved by Employee Number</label>
+                        <input type="text" name="approvedById" value={violation.approvedById} onChange={handleInputChange} required />
+                    </div>
+                    <div className="form-group">
+                        <label>Approved by Employee Name</label>
+                        <input type="text" name="approvedByName" value={violation.approvedByName} disabled />
+                    </div>
                 </div>
-
-
+                
                 <button type="submit" className="submit-btn">Save</button>
             </form>
         </Modal>

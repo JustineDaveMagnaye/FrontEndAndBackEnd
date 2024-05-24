@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
-import axios from "axios";
+import axios from 'axios';
 import '../styles/AddEditViolationModal.css';
 
 const AddViolationModal = ({ isOpen, onClose, onSubmit }) => {
     const [offenses, setOffenses] = useState([]);
+    const [students, setStudents] = useState([]);
+    const [employees, setEmployees] = useState([]);
     const [newViolation, setNewViolation] = useState({
         studentId: "",
+        studentNumber: "",
         studentName: "",
         type: "",
         offenseId: "",
@@ -16,35 +19,85 @@ const AddViolationModal = ({ isOpen, onClose, onSubmit }) => {
         disciplinaryAction: "",
         csHours: "",
         approvedById: "",
+        approvedByName: ""
     });
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                const [offensesResponse, studentsResponse, employeesResponse] = await Promise.all([
+                    axios.get('http://localhost:8080/Offense/offenses', {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    }),
+                    axios.get('http://localhost:8080/Student/students', {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    }),
+                    axios.get('http://localhost:8080/Employee/employees', {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    })
+                ]);
+                setOffenses(offensesResponse.data);
+                setStudents(studentsResponse.data);
+                setEmployees(employeesResponse.data);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
+
+        fetchData();
+    }, []);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setNewViolation({ ...newViolation, [name]: value });
+
+        if (name === 'studentNumber') {
+            fetchStudentDetails(value);
+        }
+
+        if (name === 'approvedById') {
+            fetchEmployeeDetails(value);
+        }
+    };
+
+    const fetchStudentDetails = async (studentId) => {
+        const student = students.find(student => student.studentNumber === studentId);
+        console.log(student);
+        if (student) {
+            setNewViolation(prevState => ({
+                ...prevState,
+                studentName: `${student.lastName}, ${student.firstName} ${student.middleName}`,
+                studentId: `${student.id}`
+            }));
+        } else {
+            setNewViolation(prevState => ({
+                ...prevState,
+                studentName: '',
+                studentId: ''
+            }));
+        }
+    };
+
+    const fetchEmployeeDetails = async (employeeNumber) => {
+        const employee = employees.find(employee => employee.employeeNumber === employeeNumber);
+        if (employee) {
+            setNewViolation(prevState => ({
+                ...prevState,
+                approvedByName: `${employee.lastName}, ${employee.firstName} ${employee.middleName}`
+            }));
+        } else {
+            setNewViolation(prevState => ({
+                ...prevState,
+                approvedByName: ''
+            }));
+        }
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
         onSubmit(newViolation);
     };
-
-    useEffect(() => {
-        const fetchOffenses = async () => {
-            try {
-                const response = await axios.get('http://localhost:8080/Offense/offenses', {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                    }
-                });
-                setOffenses(response.data);
-            } catch (error) {
-                console.error('Error fetching offenses:', error);
-            }
-        };
-        fetchOffenses();
-    }, []);
 
     return (
         <Modal isOpen={isOpen} onRequestClose={onClose} className="modal">
@@ -53,12 +106,12 @@ const AddViolationModal = ({ isOpen, onClose, onSubmit }) => {
             <form onSubmit={handleSubmit} className='violation-form-container'>
                 <div className='wrap'>
                     <div className="form-group">
-                        <label>Student ID</label>
-                        <input type="text" name="studentId" value={newViolation.studentId} onChange={handleInputChange} required />
+                        <label>Student Number</label>
+                        <input type="text" name="studentNumber" value={newViolation.studentNumber} onChange={handleInputChange} required />
                     </div>
                     <div className="form-group">
                         <label>Student Name</label>
-                        <input type="text" name="studentName" value={newViolation.studentName} onChange={handleInputChange} required />
+                        <input type="text" name="studentName" value={newViolation.studentName} disabled />
                     </div>
                     <div className="form-group">
                         <label>Offense</label>
@@ -86,8 +139,12 @@ const AddViolationModal = ({ isOpen, onClose, onSubmit }) => {
                         <input type="number" name="csHours" value={newViolation.csHours} onChange={handleInputChange} required />
                     </div>
                     <div className="form-group">
-                        <label>Approved by</label>
+                        <label>Approved by Employee Number</label>
                         <input type="text" name="approvedById" value={newViolation.approvedById} onChange={handleInputChange} required />
+                    </div>
+                    <div className="form-group">
+                        <label>Approved by Employee Name</label>
+                        <input type="text" name="approvedByName" value={newViolation.approvedByName} disabled />
                     </div>
                 </div>
                 
