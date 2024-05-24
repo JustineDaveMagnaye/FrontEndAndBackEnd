@@ -132,6 +132,12 @@ const ViolationPageAdmin = () => {
         navigate('/login');
     };
 
+    const formatDate = (dateString) => {
+        const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+        return new Date(dateString).toLocaleDateString(undefined, options);
+    };
+    
+
     return (
         <div className="violation-page-admin">
             <nav className="nav-bar">
@@ -191,7 +197,7 @@ const ViolationPageAdmin = () => {
                                 <tr key={violation.id}>
                                     <td>{violation.student ? `${violation.student.lastName}, ${violation.student.firstName} ${violation.student.middleName}` : 'Unknown Student'}</td>
                                     <td>{violation.offense ? violation.offense.description : 'Unknown Offense'}</td>
-                                    <td>{violation.dateOfNotice}</td>
+                                    <td>{formatDate(violation.dateOfNotice)}</td>
                                     <td>{violation.warningNumber}</td>
                                     <td>{violation.disciplinaryAction}</td>
                                     <td>{violation.csHours}</td>
