@@ -9,13 +9,48 @@ const EmployeeCsSlip = ({ data }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [message, setMessage] = useState("");
 
+    const [totalCsHours, setTotalHours] = useState("");
+    const [completedHours, setCompletedHours] = useState(0);
+    const [remainingHours, setRemainingHours] = useState(0);
+
+    useEffect(() => {
+        loadTotalHours();
+    }, [data.studentId]);
+
+    useEffect(() => {
+        updateRemainingHours();
+    }, [totalCsHours, data.deduction, completedHours]);
+
+    const loadTotalHours = async () => {
+        try {    
+            const response = await axios.get(`http://localhost:8080/CSSlip/totalCsHours/${data.studentId}`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                }
+            });
+            setTotalHours(response.data);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
+
+    const updateRemainingHours = () => {
+        const requiredHours = parseFloat(totalCsHours);
+        const deduction = parseFloat(data.deduction);
+        const remaining = requiredHours - completedHours + deduction;
+        setRemainingHours(remaining);
+    };
+
+    
     const openModal = useCallback(() => {
         setIsModalOpen(true);
     }, []);
 
     const closeModal = useCallback(() => {
         setIsModalOpen(false);
-        setMessage(""); // Clear message when closing modal
+        setMessage("");
     }, []);
 
     const handleAddCsReport = useCallback(async (csSlipId, newCsReport) => {
@@ -50,14 +85,22 @@ const EmployeeCsSlip = ({ data }) => {
             setMessage(response.data);
             closeModal();
             data.reports.push(response.data);
+
+            const newCompletedHours = completedHours + parseFloat(newCsReport.hoursCompleted);
+            setCompletedHours(newCompletedHours);
+
+            if (newCompletedHours + parseFloat(data.deduction) >= parseFloat(totalCsHours)) {
+                alert("Hours required are completed.");
+            }
+            
         } catch (error) {
             console.error('Error adding CsReport:', error);
             setMessage("CS Report cannot be added");
         }
-    }, [closeModal, data.reports]);
+    }, [closeModal, data.reports, completedHours, totalCsHours, data.deduction]);
 
     const formatDate = (dateString) => {
-        const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
         return new Date(dateString).toLocaleDateString(undefined, options);
     };
 
@@ -66,7 +109,17 @@ const EmployeeCsSlip = ({ data }) => {
         return new Date(timeString).toLocaleTimeString(undefined, options);
     };
 
-    const isSubmitDisabled = !data.id;
+    const calculateTotalHoursCompleted = () => {
+        let totalHours = 0;
+        if (data) {
+            data.reports.forEach(report => {
+                totalHours += parseFloat(report.hoursCompleted);
+            });
+        }
+        return totalHours;
+    };
+
+    const isSubmitDisabled = !data.id || (completedHours + parseFloat(data.deduction) >= parseFloat(totalCsHours));
 
     return data && (
         <div className="cs-slip-page-employee">
@@ -92,9 +145,14 @@ const EmployeeCsSlip = ({ data }) => {
                             <input type="text" className="input-fields" name="head" value={data.head} disabled/>
                         </div>
                         <div className="field-container">
+                            <label>Hours Required:</label>
+                            <input type="text" className="input-fields" name="reasonOfCs" value={totalCsHours} disabled />   
+                        </div>
+                        <div className="field-container">
                             <label>Hours to deduct:</label>
                             <input type="text" className="input-fields" name="deduction" value={data.deduction} disabled/>
                         </div>
+
                         <div className="field-container">
                             <label>Area of Community Service:</label>
                             <input type="text" className="input-fields" name="area" value={data.area} disabled/>
@@ -103,6 +161,7 @@ const EmployeeCsSlip = ({ data }) => {
                             <label>Reason for Community Service:</label>
                             <input type="text" className="input-fields" name="reasonOfCs" value={data.reason} disabled />
                         </div>
+                        
                     </div>
                     <table className="cs-slip-table">
                         <thead>
@@ -130,6 +189,11 @@ const EmployeeCsSlip = ({ data }) => {
                                     <td>{report.remarks}</td>
                                 </tr>
                             ))}
+                            <tr>
+                                <td colSpan="8">
+                                    <h3>Total Hours of Community Service Completed: {calculateTotalHoursCompleted()}</h3>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                     <div className="bottom-container">

@@ -91,22 +91,26 @@ const ViolationGuest = () => {
     };
     
 
-    const handleDateChange = (event, setDate) => {
+    const handleDateChange = (event, setDate, opposingDate, isStartDate) => {
         const date = new Date(event.target.value);
+        const opposing = new Date(opposingDate);
         const currentYear = new Date().getFullYear();
+
         if (date.getFullYear() > currentYear) {
             alert('Date exceeds the current year');
+        } else if (!isStartDate && opposingDate && date < opposing) {
+            alert('Start date cannot be earlier than end date');
         } else {
             setDate(event.target.value);
         }
     };
 
     const handleStartDateChange = (event) => {
-        handleDateChange(event, setStartDate);
+        handleDateChange(event, setStartDate, endDate, true);
     };
 
     const handleEndDateChange = (event) => {
-        handleDateChange(event, setEndDate);
+        handleDateChange(event, setEndDate, startDate, false);
     };
 
     const filterViolations = () => {

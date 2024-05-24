@@ -24,8 +24,6 @@ const CsSlipPageAdmin = () => {
     const [message, setMessage] = useState('');
     const [errors, setErrors] = useState({});
     const [successMessage, setSuccessMessage] = useState('');
-    const [deductionError, setDeductionError] = useState('');
-    const [reasonError, setReasonError] = useState('');
     const [isFormValid, setIsFormValid] = useState(false);
 
     const navigate = useNavigate();
@@ -108,65 +106,82 @@ const CsSlipPageAdmin = () => {
             [name]: value
         }));
     
+        let newErrors = { ...errors };
+    
         if (name === 'studentId') {
             const studentIdPattern = /^CT\d{2}-\d{4}$/;
             if (!studentIdPattern.test(value)) {
-                setErrors(prevErrors => ({
-                    ...prevErrors,
-                    studentId: 'Invalid Input. Please try again.'
-                }));
+                newErrors.studentId = 'Invalid Input. Please try again.';
             } else {
                 const studentExists = students.some(student => student.studentNumber === value);
                 if (!studentExists) {
-                    setErrors(prevErrors => ({
-                        ...prevErrors,
-                        studentId: 'Student not registered. Please register first.'
-                    }));
+                    newErrors.studentId = 'Student not registered. Please register first.';
                 } else {
-                    setErrors(prevErrors => {
-                        const newErrors = { ...prevErrors };
-                        delete newErrors.studentId;
-                        return newErrors;
-                    });
+                    delete newErrors.studentId;
                 }
             }
         }
     
-        if (errors[name]) {
-            const newErrors = { ...errors };
-            delete newErrors[name];
-            setErrors(newErrors);
+        if (name === 'reasonOfCs') {
+            const letterPattern = /^[a-zA-Z]*$/;
+            if (!letterPattern.test(value)) {
+                newErrors.reasonOfCs = 'Reason for Community Service should only contain letters.';
+            } else {
+                delete newErrors.reasonOfCs;
+            }
         }
+    
+        if (name === 'deduction') {
+            if (!value) {
+                newErrors.deduction = 'Hours to Deduct are required';
+            } else if (isNaN(value) || value <= 0) {
+                newErrors.deduction = 'Hours to Deduct must be a positive number';
+            } else {
+                delete newErrors.deduction;
+            }
+        }
+    
+        if (name === 'areaId') {
+            if (!value) {
+                newErrors.areaId = 'Area of Community Service is required';
+            } else {
+                delete newErrors.areaId;
+            }
+        }
+    
+        setErrors(newErrors);
     };
 
     const validate = () => {
-        const errors = {};
-        const studentIdPattern = /^CT\d{2}-\d{4}$/;
-        if (!formData.studentId) {
-            errors.studentId = 'Student ID is required';
-        } else if (!studentIdPattern.test(formData.studentId)) {
-            errors.studentId = 'Invalid Input. Please try again.';
+    const errors = {};
+    const studentIdPattern = /^CT\d{2}-\d{4}$/;
+    if (!formData.studentId) {
+        errors.studentId = 'Student ID is required';
+    } else if (!studentIdPattern.test(formData.studentId)) {
+        errors.studentId = 'Invalid Input. Please try again.';
+    }
+
+    if (!formData.deduction) {
+        errors.deduction = 'Hours to Deduct are required';
+    } else if (isNaN(formData.deduction) || formData.deduction <= 0) {
+        errors.deduction = 'Hours to Deduct must be a positive number';
+    }
+
+    if (!formData.areaId) {
+        errors.areaId = 'Area of Community Service is required';
+    }
+
+    if (!formData.reasonOfCs) {
+        errors.reasonOfCs = 'Reason for Community Service is required';
+    } else {
+        const letterPattern = /^[a-zA-Z]*$/;
+        if (!letterPattern.test(formData.reasonOfCs)) {
+            errors.reasonOfCs = 'Reason for Community Service should only contain letters.';
         }
-        if (!formData.deduction) {
-            errors.deduction = 'Hours to Deduct are required';
-            setDeductionError('Hours to Deduct are required');
-        } else if (isNaN(formData.deduction) || formData.deduction <= 0) {
-            errors.deduction = 'Hours to Deduct must be a positive number';
-            setDeductionError('Hours to Deduct must be a positive number');
-        } else {
-            setDeductionError('');
-        }
-        if (!formData.areaId) {
-            errors.areaId = 'Area of Community Service is required';
-        }
-        if (!formData.reasonOfCs) {
-            errors.reasonOfCs = 'Reason for Community Service is required';
-            setReasonError('Reason for Community Service is required');
-        } else {
-            setReasonError('');
-        }
-        return errors;
-    };
+    }
+
+    return errors;
+};
 
     const fetchStudentDetails = async (studentId) => {
         try {
@@ -268,7 +283,7 @@ const CsSlipPageAdmin = () => {
                     setSuccessMessage('Community Service Slip created successfully!');
                     setTimeout(() => {
                         setSuccessMessage('');
-                    }, 5000); // Clear success message after 5 seconds
+                    }, 5000);
                 } else {
                     console.error('Response data is undefined:', response);
                     setMessage('Unexpected error occurred.');
@@ -330,7 +345,7 @@ const CsSlipPageAdmin = () => {
                             <div className="field-container">
                                 <label>Hours to Deduct:</label>
                                 <input type="text" className="cs-input-field" name="deduction" value={formData.deduction} onChange={handleInputChange} />
-                                {deductionError && <span className="error">{deductionError}</span>}
+                                {errors.deduction && <span className="error">{errors.deduction}</span>}
                             </div>
                             <div className="field-container">
                                 <label>Area of Community Service:</label>
@@ -343,9 +358,9 @@ const CsSlipPageAdmin = () => {
                                 {errors.areaId && <span className="error">{errors.areaId}</span>}
                             </div>
                             <div className="field-container">
-                                <label>Reason for Community Service:</label>
-                                <input type="text" className="cs-input-field" name="reasonOfCs" value={formData.reasonOfCs} onChange={handleInputChange} />
-                                {reasonError && <span className="error">{reasonError}</span>}
+                            <label>Reason for Community Service:</label>
+                            <input type="text" className="cs-input-field" name="reasonOfCs" value={formData.reasonOfCs} onChange={handleInputChange} />
+                            {errors.reasonOfCs && <span className="error">{errors.reasonOfCs}</span>}
                             </div>
                         </div>
                         <table className="cs-slip-table">

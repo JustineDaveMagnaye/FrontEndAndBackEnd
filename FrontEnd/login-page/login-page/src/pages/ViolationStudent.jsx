@@ -7,7 +7,7 @@ import user from '../assets/user.png';
 
 const ViolationStudent = () => {
     const [violations, setViolations] = useState([]);
-    const [userId, setUserId] = useState(''); // Define userId state variable
+    const [userId, setUserId] = useState('');
 
     const [filteredViolations, setFilteredViolations] = useState([]);
     const [startDate, setStartDate] = useState('');
@@ -48,22 +48,26 @@ const ViolationStudent = () => {
     };
 
     //date filter codes
-    const handleDateChange = (event, setDate) => {
+    const handleDateChange = (event, setDate, opposingDate, isStartDate) => {
         const date = new Date(event.target.value);
+        const opposing = new Date(opposingDate);
         const currentYear = new Date().getFullYear();
+
         if (date.getFullYear() > currentYear) {
             alert('Date exceeds the current year');
+        } else if (!isStartDate && opposingDate && date < opposing) {
+            alert('Start date cannot be earlier than end date');
         } else {
             setDate(event.target.value);
         }
     };
 
     const handleStartDateChange = (event) => {
-        handleDateChange(event, setStartDate);
+        handleDateChange(event, setStartDate, endDate, true);
     };
 
     const handleEndDateChange = (event) => {
-        handleDateChange(event, setEndDate);
+        handleDateChange(event, setEndDate, startDate, false);
     };
 
     const filterViolations = () => {
@@ -169,7 +173,7 @@ const ViolationStudent = () => {
                             {filteredViolations.map((violation) => (
                                 <tr key={violation.id}>
                                     <td>{`${violation.student.lastName}, ${violation.student.firstName} ${violation.student.middleName}`}</td>
-                                    <td>{violation.offense.name}</td>
+                                    <td>{violation.offense.description}</td>
                                     <td>{formatDate(violation.dateOfNotice)}</td>
                                     <td>{violation.warningNumber}</td>
                                     <td>{violation.disciplinaryAction}</td>
