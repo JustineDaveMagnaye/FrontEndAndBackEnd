@@ -207,7 +207,6 @@ const CsSlipGuest = () => {
                                                                     <th>NATURE OF WORK</th>
                                                                     <th>OFFICE</th>
                                                                     <th>STATUS</th>
-                                                                    <th>SUPERVISING PERSONNEL</th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
@@ -220,11 +219,10 @@ const CsSlipGuest = () => {
                                                                         <td>{report.natureOfWork}</td>
                                                                         <td>{selectedSlip.areaOfCommServ.stationName}</td>
                                                                         <td>{report.status}</td>
-                                                                        <td>{report.employeeNumber}</td>
                                                                     </tr>
                                                                 ))}
                                                                 <tr>
-                                                                    <td colSpan="8">
+                                                                    <td colSpan="7">
                                                                         <h3>Total Hours of Community Service Completed: {calculateTotalHoursCompleted()}</h3>
                                                                     </td>
                                                                 </tr>

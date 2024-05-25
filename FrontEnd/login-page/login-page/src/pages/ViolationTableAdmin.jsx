@@ -127,7 +127,10 @@ const ViolationPageAdmin = () => {
                 },
                 warningNumber: parseInt(newViolation.warningNumber),
                 csHours: parseInt(newViolation.csHours),
-                disciplinaryAction: newViolation.disciplinaryAction
+                disciplinaryAction: newViolation.disciplinaryAction,
+                approvedBy: {
+                    id: parseInt(newViolation.approvedById)
+                },
             };
 
             const response = await axios.post("http://localhost:8080/Violation/violation/addViolation", formattedViolation, {
