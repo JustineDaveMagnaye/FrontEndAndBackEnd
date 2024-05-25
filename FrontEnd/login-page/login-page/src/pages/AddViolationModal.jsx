@@ -20,6 +20,7 @@ const AddViolationModal = ({ isOpen, onClose, onSubmit }) => {
         disciplinaryAction: "",
         csHours: "",
         approvedById: "",
+        approvedByNumber: "",
         approvedByName: ""
     });
 
@@ -100,7 +101,7 @@ const AddViolationModal = ({ isOpen, onClose, onSubmit }) => {
             fetchStudentDetails(value);
         }
 
-        if (name === 'approvedById') {
+        if (name === 'approvedByNumber') {
             fetchEmployeeDetails(value);
         }
     };
@@ -123,17 +124,19 @@ const AddViolationModal = ({ isOpen, onClose, onSubmit }) => {
         }
     };
 
-    const fetchEmployeeDetails = async (employeeNumber) => {
-        const employee = employees.find(employee => employee.employeeNumber === employeeNumber);
+    const fetchEmployeeDetails = async (approvedById) => {
+        const employee = employees.find(employee => employee.employeeNumber === approvedById);
         if (employee) {
             setNewViolation(prevState => ({
                 ...prevState,
-                approvedByName: `${employee.lastName}, ${employee.firstName} ${employee.middleName}`
+                approvedByName: `${employee.lastName}, ${employee.firstName} ${employee.middleName}`,
+                approvedById: `${employee.id}`
             }));
         } else {
             setNewViolation(prevState => ({
                 ...prevState,
-                approvedByName: ''
+                approvedByName: '',
+                approvedById: ''
             }));
         }
     };
@@ -192,7 +195,7 @@ const AddViolationModal = ({ isOpen, onClose, onSubmit }) => {
                     </div>
                     <div className="form-group">
                         <label>Approved by: Employee Number</label>
-                        <input type="text" name="approvedById" value={newViolation.approvedById} onChange={handleInputChange} required />
+                        <input type="text" name="approvedByNumber" value={newViolation.approvedByNumber} onChange={handleInputChange} required />
                     </div>
                     <div className="form-group">
                         <label>Approved by: Employee Name</label>

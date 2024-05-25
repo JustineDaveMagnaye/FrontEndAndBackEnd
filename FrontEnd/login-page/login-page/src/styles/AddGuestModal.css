@@ -15,15 +15,30 @@
     background-color: #fff;
     padding: 20px;
     border-radius: 8px;
-    max-width: 370px;
+    max-width: 680px;
     width: 100%;
+    display: grid;
+    justify-items: center;
+    align-items: center;
+}
+
+.addGuest {
+    text-align: center;
+    padding: 10px 0;
+}
+
+form{
+    width: 100%;
+    display: grid;
+    justify-items: center;
+    align-items: center;
 }
 
 .close2 {
     position: absolute;
-    top: 1.5%;
-    right: 50%;
-    font-size: 20px;
+    top: 16%;
+    right: 16%;
+    font-size: 23px;
     cursor: pointer;
 }
 
@@ -45,13 +60,17 @@
 }
 
 button[type="submit"] {
-    background-color: #007bff;
+    margin: 15px 0;
+    justify-content: center;
+    align-items: center;
+    width: 180px;
+    font-size: 12px;
+    background-color: #0174BE;
     color: #fff;
     border: none;
-    border-radius: 4px;
-    padding: 10px 20px;
-    font-size: 16px;
     cursor: pointer;
+    border-radius: .5vw;
+    transition: background-color 0.3s;
 }
 
 button[type="submit"]:hover {

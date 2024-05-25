@@ -167,7 +167,6 @@ const CsSlipStudent = () => {
                                                                     <th>NATURE OF WORK</th>
                                                                     <th>OFFICE</th>
                                                                     <th>STATUS</th>
-                                                                    <th>SUPERVISING PERSONNEL</th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
@@ -180,7 +179,6 @@ const CsSlipStudent = () => {
                                                                         <td>{report.natureOfWork}</td>
                                                                         <td>{selectedSlip.areaOfCommServ.stationName}</td>
                                                                         <td>{report.status}</td>
-                                                                        <td>{report.approvedById}</td>
                                                                     </tr>
                                                                 ))}
                                                             </tbody>
