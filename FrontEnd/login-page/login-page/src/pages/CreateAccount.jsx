@@ -77,13 +77,7 @@ const RegisterForm = () => {
                         email: formData.email
                     }
                 };
-                const response = await Axios.post('http://localhost:8080/user/register', payload, {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                    }
-                });
+                const response = await Axios.post('http://localhost:8080/user/register', payload);
                 if (response.status === 200) {
                     navigate('/account/otp');
                 } else if (response && response.data) {
@@ -120,13 +114,7 @@ const RegisterForm = () => {
         try {
             const guestNumber = `GUEST_${Math.floor(1000 + Math.random() * 9000)}`;
     
-            const response = await Axios.post('http://localhost:8080/Guest/addGuest', { ...guestData, guestNumber: guestNumber }, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                }
-            });
+            const response = await Axios.post('http://localhost:8080/Guest/addGuest', { ...guestData, guestNumber: guestNumber });
             
             if (response.status === 200) {
                 console.log('Guest added successfully');
@@ -138,13 +126,7 @@ const RegisterForm = () => {
                         guestNumber: guestNumber
                     }
                 };
-                const userRegisterResponse = await Axios.post('http://localhost:8080/user/register', payload, {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                    }
-                });
+                const userRegisterResponse = await Axios.post('http://localhost:8080/user/register', payload);
                 
                 if (userRegisterResponse.status === 200) {
                     console.log('User registered successfully');
